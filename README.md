@@ -66,7 +66,3 @@ npm run lint-fix
 `src` you can structure your codes and folder as you like inside this folder.\
 `public` your static asset must be placed inside this folder. You can also
 create new folder inside this folder.
-
-## License
-
-[MIT License](LICENSE.md)
