@@ -37,6 +37,7 @@ export default class GameScene extends Phaser.Scene {
 
 	update(time: number, delta: number): void {
 		this.players.forEach(player => player.update(time, delta));
+		this.controls.forEach(control => control.update(time, delta));
 
 
 		this.manageEnemies(time, delta);

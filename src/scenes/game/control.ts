@@ -41,7 +41,7 @@ export class Toilet extends Control {
 
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
-			this.playerUsingThis.toilet.value = Math.min(1, this.playerUsingThis.toilet.value + 0.1 * time);
+			this.playerUsingThis.toilet.value = Math.min(1, this.playerUsingThis.toilet.value + 0.1 * delta / 1000);
 		}
 	}
 }
