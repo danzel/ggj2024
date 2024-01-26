@@ -1,5 +1,5 @@
 import GameScene from "../gameScene";
-import { Control } from "./control";
+import { Control, WeaponControl } from "./control";
 import { Stat } from "./stat";
 import { StatBar } from "./statBar";
 
@@ -68,7 +68,10 @@ export class Player {
 
 		//move player
 		if (this.usingControl) {
-			//TODO: use the control
+			//use the control
+			if (this.usingControl instanceof WeaponControl) {
+				this.usingControl.receiveInput(p);
+			}
 		}
 		else {
 			let controllerAngle = new Phaser.Math.Vector2(p.axes[0].getValue(), p.axes[1].getValue());
@@ -89,9 +92,6 @@ export class Player {
 				}
 			}
 		}
-
-
-
 		this._lastButtonA = p.A;
 	}
 }

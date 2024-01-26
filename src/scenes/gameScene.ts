@@ -1,6 +1,7 @@
-import { Control, Toilet } from "./game/control";
+import { Bed, Control, Kitchen, LawnMowerControl, TV, Toilet } from "./game/control";
 import { Enemy } from "./game/enemy";
 import { Player } from "./game/player";
+import { LawnMower } from "./game/weapons";
 
 
 export default class GameScene extends Phaser.Scene {
@@ -10,6 +11,8 @@ export default class GameScene extends Phaser.Scene {
 
 	enemies = new Array<Enemy>();
 	controls = new Array<Control>();
+	weapons = new Array<LawnMower>(); //todo type
+
 	constructor() {
 		super('hello');
 
@@ -32,7 +35,14 @@ export default class GameScene extends Phaser.Scene {
 			this.playerByBody.set(this.players[i].body, this.players[i]);
 		}
 
-		this.controls.push(new Toilet(this, 1920 / 2 + 200, 1080 / 2 + 200, 100, 100));
+		this.controls.push(new Toilet(this, 1920 / 2 + 0, 1080 / 2 + 200, 100, 100));
+		this.controls.push(new Bed(this, 1920 / 2 + 200, 1080 / 2 + 200, 100, 100));
+		this.controls.push(new Kitchen(this, 1920 / 2 + 400, 1080 / 2 + 200, 100, 100));
+		this.controls.push(new TV(this, 1920 / 2 + 600, 1080 / 2 + 200, 100, 100));
+
+		let lawnMower = new LawnMower(this, 400, 700);
+		this.weapons.push(lawnMower);
+		this.controls.push(new LawnMowerControl(this, 1920 / 2 - 200, 1080 / 2 + 200, 100, 100, lawnMower));
 	}
 
 	update(time: number, delta: number): void {
