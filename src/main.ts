@@ -1,24 +1,32 @@
 import Phaser from "phaser";
-import HelloScene from "./scenes/HelloScene";
+import GameScene from "./scenes/gameScene";
 
 const config: Phaser.Types.Core.GameConfig = {
 	parent: "app",
 	type: Phaser.AUTO,
-	width: 800,
-	height: 600,
+	width: 1920,
+	height: 1080,
 	scale: {
-	 mode: Phaser.Scale.ScaleModes.FIT,
+		mode: Phaser.Scale.ScaleModes.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 	},
 	physics: {
-		default: 'arcade',
-		arcade: {
-			gravity: { y: 200 }
+		default: 'matter',
+		matter: {
+			debug: true,
+			enableSleeping: false,
+			gravity: {
+				x: 0,
+				y: 0,
+			},
+
 		}
 	},
 	scene: [
-		HelloScene,
-	]
+		GameScene,
+	], input: {
+		gamepad: true
+	}
 };
 
 export default new Phaser.Game(config);
