@@ -1,6 +1,6 @@
 import GameScene from "../gameScene";
 import { Player } from "./player";
-import { LawnMower, MachineGunTurret, Oven } from "./weapons";
+import { LawnMower, MachineGunTurret, Oven, Pool } from "./weapons";
 
 export abstract class Control {
 	sensor: MatterJS.BodyType;
@@ -143,13 +143,10 @@ export class MachineGunTurretControl extends WeaponControl {
 			} else {
 				this.turret.image.angle = this.turret.image.angle + rotation;
 
-				console.log(this.turret.image.angle, this.turret.minAngleDegree, this.turret.maxAngleDegree)
 				if (this.turret.image.angle > 0 && this.turret.image.angle < this.turret.minAngleDegree) {
-					console.log('min');
 					this.turret.image.angle = this.turret.minAngleDegree;
 				}
 				if (this.turret.image.angle < 0 && this.turret.image.angle > this.turret.maxAngleDegree) {
-					console.log('max');
 					this.turret.image.angle = this.turret.maxAngleDegree;
 				}
 			}
@@ -199,6 +196,27 @@ export class OvenControl extends WeaponControl {
 
 			if (pp.distance(op) > 40) {
 				this.playerUsingThis.image.applyForce(op.subtract(pp).normalize().scale(0.001));
+			}
+		}
+	}
+}
+
+export class PoolControl extends WeaponControl {
+	constructor(scene: GameScene, x: number, y: number, w: number, h: number, public pool: Pool) {
+		super(scene, x, y, w, h);
+		pool.controller = this;
+	}
+
+	receiveInput(gamepad: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
+
+	}
+
+	update(time: number, delta: number): void {
+		if (this.playerUsingThis) {
+			if (time - this.pool.lastTimeCleaned > 200) {
+				this.pool.enemiesInside--;
+				this.pool.enemiesInside = Math.max(0, this.pool.enemiesInside);
+				this.pool.lastTimeCleaned = time;
 			}
 		}
 	}

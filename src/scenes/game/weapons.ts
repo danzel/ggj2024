@@ -1,5 +1,5 @@
 import GameScene from "../gameScene";
-import { LawnMowerControl, MachineGunTurretControl, OvenControl } from "./control";
+import { LawnMowerControl, MachineGunTurretControl, OvenControl, PoolControl } from "./control";
 import { Enemy } from "./enemy";
 
 export abstract class Weapon {
@@ -180,5 +180,55 @@ export class LawnMower extends DamageWeapon {
 		if (!enemy) return;
 
 		enemy.receiveHitFromWeapon(this);
+	}
+}
+
+
+export class Pool extends DamageWeapon {
+	controller: PoolControl | null = null;
+
+	width = 100;
+	height = 300;
+
+	maxEnemiesInside = 3;
+	enemiesInside = 0;
+	lastTimeCleaned: number = 0;
+
+	constructor(private scene: GameScene, x: number, y: number) {
+		super();
+
+		//Blocker for players
+		this.scene.matter.add.rectangle(x, y, this.width, this.height, {
+			isStatic: true,
+			collisionFilter: {
+				category: scene.categoryPool,
+				mask: scene.categoryPlayer
+			}
+		});
+
+		//Sensor for enemies
+		let enemySensor = this.scene.matter.add.rectangle(x, y, this.width, this.height, {
+			isSensor: true,
+			isStatic: true,
+			collisionFilter: {
+				category: scene.categoryPool,
+				mask: scene.categoryEnemy
+			}
+		});
+		enemySensor.onCollideActiveCallback = (pair: MatterJS.IPair) => {
+
+			this.hit((<any>pair.bodyA).enemy);
+			this.hit((<any>pair.bodyB).enemy);
+		}
+
+		//Probably need a fullness bar
+	}
+	hit(enemy: Enemy | undefined) {
+		if (!enemy) return;
+
+		if (this.enemiesInside < this.maxEnemiesInside) {
+			this.enemiesInside++;
+			enemy.receiveHitFromWeapon(this);
+		}
 	}
 }

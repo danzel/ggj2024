@@ -1,8 +1,8 @@
-import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, OvenControl, TV, Toilet } from "./game/control";
+import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, OvenControl, PoolControl, TV, Toilet } from "./game/control";
 import { Enemy } from "./game/enemy";
 import { House } from "./game/house";
 import { Player } from "./game/player";
-import { LawnMower, MachineGunTurret, Oven, Weapon } from "./game/weapons";
+import { LawnMower, MachineGunTurret, Oven, Pool, Weapon } from "./game/weapons";
 
 
 export default class GameScene extends Phaser.Scene {
@@ -22,6 +22,8 @@ export default class GameScene extends Phaser.Scene {
 	categoryBullet: number = null!;
 	categoryControlSensor: number = null!;
 	categoryOvenFire: number = null!;
+	categoryPool: number = null!;
+
 	house: House = null!;
 
 	constructor() {
@@ -48,6 +50,7 @@ export default class GameScene extends Phaser.Scene {
 		this.categoryBullet = this.matter.world.nextCategory();
 		this.categoryControlSensor = this.matter.world.nextCategory();
 		this.categoryOvenFire = this.matter.world.nextCategory();
+		this.categoryPool = this.matter.world.nextCategory();
 
 
 		for (let i = 0; i < 4; i++) {
@@ -78,6 +81,11 @@ export default class GameScene extends Phaser.Scene {
 		let oven = new Oven(this, 1000, 500);
 		this.weapons.push(oven);
 		this.controls.push(new OvenControl(this, 1000, 500, 50, oven));
+
+
+		let pool = new Pool(this, 200, 500);
+		this.weapons.push(pool);
+		this.controls.push(new PoolControl(this, 200, 500, pool.width + 100, pool.height + 100, pool));
 	}
 
 	update(time: number, delta: number): void {
