@@ -16,7 +16,7 @@ export class MachineGunTurret extends Weapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'gunTurret');
-		this.image.setCircle(30);
+		this.image.setCircle(30, { isStatic: true });
 		this.image.setCollisionCategory(scene.categoryTurret);
 		this.image.angle = minAngleDegree;
 
@@ -48,7 +48,7 @@ export class Bullet extends DamageWeapon {
 		this.image.setCollisionCategory(scene.categoryBullet);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
-		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle)).scale(30);
+		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45)).scale(30);
 		this.image.setVelocity(direction.x, direction.y);
 
 		this.body = <MatterJS.BodyType>this.image.body;

@@ -83,12 +83,10 @@ export class Player {
 		//start/end using a control
 		if (p.A && !this._lastButtonA) {
 			if (this.usingControl) {
-				console.log("stop using control");
 				this.usingControl.playerUsingThis = null;
 				this.usingControl = null;
 			} else if (this.onControl) {
 				if (!this.onControl.playerUsingThis) {
-					console.log("start using control");
 					this.onControl.playerUsingThis = this;
 					this.usingControl = this.onControl;
 				}
