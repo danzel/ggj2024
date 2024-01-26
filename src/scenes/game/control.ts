@@ -1,21 +1,34 @@
 import GameScene from "../gameScene";
 import { Player } from "./player";
-import { LawnMower, MachineGunTurret } from "./weapons";
+import { LawnMower, MachineGunTurret, Oven } from "./weapons";
 
 export abstract class Control {
 	sensor: MatterJS.BodyType;
 
 	playerUsingThis: Player | null = null;
 
-	constructor(protected scene: GameScene, x: number, y: number, w: number, h: number) {
-		this.sensor = scene.matter.add.rectangle(x, y, w, h, {
-			isSensor: true,
-			isStatic: true,
-			collisionFilter: {
-				category: scene.categoryControlSensor,
-				mask: scene.categoryPlayer
-			}
-		});
+	constructor(protected scene: GameScene, x: number, y: number, w: number, h: number | undefined) {
+
+		if (h === undefined) {
+			this.sensor = scene.matter.add.circle(x, y, w, {
+				isSensor: true,
+				//isStatic: true,
+				collisionFilter: {
+					category: scene.categoryControlSensor,
+					mask: scene.categoryPlayer
+				}
+			});
+		}
+		else {
+			this.sensor = scene.matter.add.rectangle(x, y, w, h, {
+				isSensor: true,
+				isStatic: true,
+				collisionFilter: {
+					category: scene.categoryControlSensor,
+					mask: scene.categoryPlayer
+				}
+			});
+		}
 
 		//record who is on top of this control
 		this.sensor.onCollideCallback = (pair: MatterJS.IPair) => {
@@ -91,7 +104,7 @@ export class TV extends Control {
 
 export abstract class WeaponControl extends Control {
 
-	constructor(scene: GameScene, x: number, y: number, w: number, h: number) {
+	constructor(scene: GameScene, x: number, y: number, w: number, h: number | undefined) {
 		super(scene, x, y, w, h);
 	}
 
@@ -148,5 +161,45 @@ export class MachineGunTurretControl extends WeaponControl {
 	}
 
 	update(time: number, delta: number): void {
+	}
+}
+
+export class OvenControl extends WeaponControl {
+	constructor(scene: GameScene, x: number, y: number, r: number, public oven: Oven) {
+		super(scene, x, y, r, undefined);
+		oven.controller = this;
+
+		this.update(0, 0);
+	}
+
+	receiveInput(p: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
+		if (p.B && time - this.oven.lastFiredTime > 100) {
+			this.oven.fire(time, delta);
+		}
+
+		if (!p.B) {
+			//Move it
+			let controllerAngle = new Phaser.Math.Vector2(p.axes[0].getValue(), p.axes[1].getValue());
+
+			if (controllerAngle.length() > 0.1) {
+				this.oven.image.applyForce(controllerAngle.clone().scale(0.003));
+
+				this.oven.image.rotation = Phaser.Math.Angle.RotateTo(this.oven.image.rotation, controllerAngle.angle(), 2 * delta / 1000);
+			}
+		}
+	}
+
+	update(time: number, delta: number): void {
+		this.sensor.position.x = this.oven.image.x;
+		this.sensor.position.y = this.oven.image.y;
+
+		if (this.playerUsingThis) {
+			let pp = new Phaser.Math.Vector2(this.playerUsingThis.image.x, this.playerUsingThis.image.y);
+			let op = new Phaser.Math.Vector2(this.oven.image.x, this.oven.image.y);
+
+			if (pp.distance(op) > 40) {
+				this.playerUsingThis.image.applyForce(op.subtract(pp).normalize().scale(0.001));
+			}
+		}
 	}
 }

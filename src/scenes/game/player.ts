@@ -22,7 +22,7 @@ export class Player {
 		this.image = scene.matter.add.image(1000, 500, 'player');
 		this.image.setCircle(10);
 		this.image.setCollisionCategory(scene.categoryPlayer);
-		this.image.setCollidesWith([scene.categoryPlayer, scene.categoryWall, scene.categoryEnemy, scene.categoryLawnMower, scene.categoryTurret, scene.categoryBullet, scene.categoryControlSensor])
+		this.image.setCollidesWith([scene.categoryPlayer, scene.categoryWall, scene.categoryEnemy, scene.categoryLawnMower, scene.categoryTurret, scene.categoryBullet, scene.categoryControlSensor, scene.categoryOvenFire])
 		this.body = <MatterJS.BodyType>this.image.body;
 
 		this.body.frictionAir = 0.8;

@@ -1,7 +1,8 @@
-import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, TV, Toilet } from "./game/control";
+import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, OvenControl, TV, Toilet } from "./game/control";
 import { Enemy } from "./game/enemy";
+import { House } from "./game/house";
 import { Player } from "./game/player";
-import { LawnMower, MachineGunTurret, Weapon } from "./game/weapons";
+import { LawnMower, MachineGunTurret, Oven, Weapon } from "./game/weapons";
 
 
 export default class GameScene extends Phaser.Scene {
@@ -20,6 +21,8 @@ export default class GameScene extends Phaser.Scene {
 	categoryTurret: number = null!;
 	categoryBullet: number = null!;
 	categoryControlSensor: number = null!;
+	categoryOvenFire: number = null!;
+	house: House = null!;
 
 	constructor() {
 		super('hello');
@@ -44,12 +47,15 @@ export default class GameScene extends Phaser.Scene {
 		this.categoryTurret = this.matter.world.nextCategory();
 		this.categoryBullet = this.matter.world.nextCategory();
 		this.categoryControlSensor = this.matter.world.nextCategory();
+		this.categoryOvenFire = this.matter.world.nextCategory();
 
 
 		for (let i = 0; i < 4; i++) {
 			this.players.push(new Player(this, i));
 			this.playerByBody.set(this.players[i].body, this.players[i]);
 		}
+
+		this.house = new House(this);
 
 		this.controls.push(new Toilet(this, 1920 / 2 + 0, 1080 / 2 + 200, 100, 100));
 		this.controls.push(new Bed(this, 1920 / 2 + 200, 1080 / 2 + 200, 100, 100));
@@ -67,11 +73,17 @@ export default class GameScene extends Phaser.Scene {
 		turret = new MachineGunTurret(this, 700, 500, 90, -90);
 		this.weapons.push(turret);
 		this.controls.push(new MachineGunTurretControl(this, 800, 450, 100, 100, turret));
+
+
+		let oven = new Oven(this, 1000, 500);
+		this.weapons.push(oven);
+		this.controls.push(new OvenControl(this, 1000, 500, 50, oven));
 	}
 
 	update(time: number, delta: number): void {
 		this.players.forEach(player => player.update(time, delta));
 		this.controls.forEach(control => control.update(time, delta));
+		this.house.update(time, delta);
 
 
 		this.manageEnemies(time, delta);
