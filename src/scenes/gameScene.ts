@@ -60,9 +60,13 @@ export default class GameScene extends Phaser.Scene {
 		this.weapons.push(lawnMower);
 		this.controls.push(new LawnMowerControl(this, 1920 / 2 - 200, 1080 / 2 + 200, 100, 100, lawnMower));
 
-		let turret = new MachineGunTurret(this, 600, 500, -90, 90);
+		let turret = new MachineGunTurret(this, 1200, 500, -90, 90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 1920 / 2 - 200, 1080 / 2 + 0, 100, 100, turret));
+		this.controls.push(new MachineGunTurretControl(this, 1100, 450, 100, 100, turret));
+
+		turret = new MachineGunTurret(this, 700, 500, 90, -90);
+		this.weapons.push(turret);
+		this.controls.push(new MachineGunTurretControl(this, 800, 450, 100, 100, turret));
 	}
 
 	update(time: number, delta: number): void {

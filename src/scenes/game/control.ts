@@ -125,7 +125,21 @@ export class MachineGunTurretControl extends WeaponControl {
 		if (x > 0.1 || x < -0.1) {
 			let rotation = delta / 1000 * 30 * x;
 
-			this.turret.image.angle = Phaser.Math.Clamp(this.turret.image.angle + rotation, this.turret.minAngleDegree, this.turret.maxAngleDegree);
+			if (this.turret.minAngleDegree < this.turret.maxAngleDegree) {
+				this.turret.image.angle = Phaser.Math.Clamp(this.turret.image.angle + rotation, this.turret.minAngleDegree, this.turret.maxAngleDegree);
+			} else {
+				this.turret.image.angle = this.turret.image.angle + rotation;
+
+				console.log(this.turret.image.angle, this.turret.minAngleDegree, this.turret.maxAngleDegree)
+				if (this.turret.image.angle > 0 && this.turret.image.angle < this.turret.minAngleDegree) {
+					console.log('min');
+					this.turret.image.angle = this.turret.minAngleDegree;
+				}
+				if (this.turret.image.angle < 0 && this.turret.image.angle > this.turret.maxAngleDegree) {
+					console.log('max');
+					this.turret.image.angle = this.turret.maxAngleDegree;
+				}
+			}
 		}
 
 		if (p.B && time - this.turret.lastFiredTime > 333) {
