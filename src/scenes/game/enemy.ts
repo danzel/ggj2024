@@ -5,8 +5,8 @@ export class Enemy {
 	body: MatterJS.BodyType;
 	constructor(private scene: GameScene, x: number, y: number) {
 		this.image = scene.matter.add.image(x, y, 'enemy');
-
 		this.image.setCircle(10);
+		this.image.setCollisionCategory(scene.categoryEnemy);
 		this.body = <MatterJS.BodyType>this.image.body;
 
 		this.body.frictionAir = 0.8;

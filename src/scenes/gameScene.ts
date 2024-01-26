@@ -1,7 +1,7 @@
-import { Bed, Control, Kitchen, LawnMowerControl, TV, Toilet } from "./game/control";
+import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, TV, Toilet } from "./game/control";
 import { Enemy } from "./game/enemy";
 import { Player } from "./game/player";
-import { LawnMower } from "./game/weapons";
+import { LawnMower, MachineGunTurret, Weapon } from "./game/weapons";
 
 
 export default class GameScene extends Phaser.Scene {
@@ -11,7 +11,15 @@ export default class GameScene extends Phaser.Scene {
 
 	enemies = new Array<Enemy>();
 	controls = new Array<Control>();
-	weapons = new Array<LawnMower>(); //todo type
+	weapons = new Array<Weapon>();
+
+	categoryPlayer: number = null!;
+	categoryEnemy: number = null!;
+	categoryWall: number = null!;
+	categoryLawnMower: number = null!;
+	categoryTurret: number = null!;
+	categoryBullet: number = null!;
+	categoryControlSensor: number = null!;
 
 	constructor() {
 		super('hello');
@@ -20,7 +28,6 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	preload() {
-
 		// load static from our public dir
 		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
 
@@ -30,6 +37,15 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+		this.categoryPlayer = this.matter.world.nextCategory();
+		this.categoryEnemy = this.matter.world.nextCategory();
+		this.categoryWall = this.matter.world.nextCategory();
+		this.categoryLawnMower = this.matter.world.nextCategory();
+		this.categoryTurret = this.matter.world.nextCategory();
+		this.categoryBullet = this.matter.world.nextCategory();
+		this.categoryControlSensor = this.matter.world.nextCategory();
+
+
 		for (let i = 0; i < 4; i++) {
 			this.players.push(new Player(this, i));
 			this.playerByBody.set(this.players[i].body, this.players[i]);
@@ -43,6 +59,10 @@ export default class GameScene extends Phaser.Scene {
 		let lawnMower = new LawnMower(this, 400, 700);
 		this.weapons.push(lawnMower);
 		this.controls.push(new LawnMowerControl(this, 1920 / 2 - 200, 1080 / 2 + 200, 100, 100, lawnMower));
+
+		let turret = new MachineGunTurret(this, 600, 500, 0, 180);
+		this.weapons.push(turret);
+		this.controls.push(new MachineGunTurretControl(this, 1920 / 2 - 200, 1080 / 2 + 0, 100, 100, turret));
 	}
 
 	update(time: number, delta: number): void {

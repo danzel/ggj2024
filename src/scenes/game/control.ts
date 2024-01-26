@@ -1,6 +1,6 @@
 import GameScene from "../gameScene";
 import { Player } from "./player";
-import { LawnMower } from "./weapons";
+import { LawnMower, MachineGunTurret } from "./weapons";
 
 export abstract class Control {
 	sensor: MatterJS.BodyType;
@@ -10,7 +10,11 @@ export abstract class Control {
 	constructor(protected scene: GameScene, x: number, y: number, w: number, h: number) {
 		this.sensor = scene.matter.add.rectangle(x, y, w, h, {
 			isSensor: true,
-			isStatic: true
+			isStatic: true,
+			collisionFilter: {
+				category: scene.categoryControlSensor,
+				mask: scene.categoryPlayer
+			}
 		});
 
 		//record who is on top of this control
@@ -91,7 +95,7 @@ export abstract class WeaponControl extends Control {
 		super(scene, x, y, w, h);
 	}
 
-	abstract receiveInput(gamepad: Phaser.Input.Gamepad.Gamepad): void;
+	abstract receiveInput(gamepad: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void;
 }
 
 export class LawnMowerControl extends WeaponControl {
@@ -100,12 +104,35 @@ export class LawnMowerControl extends WeaponControl {
 		lawnMower.controller = this;
 	}
 
-	receiveInput(p: Phaser.Input.Gamepad.Gamepad): void {
+	receiveInput(p: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
 		let controllerAngle = new Phaser.Math.Vector2(p.axes[0].getValue(), p.axes[1].getValue());
 		this.lawnMower.image.applyForce(controllerAngle.clone().scale(0.0007));
 	}
 
 	update(time: number, delta: number): void {
 		//todo if a player is controlling, put out some smoke particles
+	}
+}
+
+export class MachineGunTurretControl extends WeaponControl {
+	constructor(scene: GameScene, x: number, y: number, w: number, h: number, public turret: MachineGunTurret) {
+		super(scene, x, y, w, h);
+		turret.controller = this;
+	}
+
+	receiveInput(p: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
+		let x = p.axes[0].getValue();
+		if (x > 0.1 || x < -0.1) {
+			let rotation = delta / 1000 * 30 * x;
+
+			this.turret.image.angle = Phaser.Math.Clamp(this.turret.image.angle + rotation, this.turret.minAngleDegree, this.turret.maxAngleDegree);
+		}
+
+		if (p.B && time - this.turret.lastFiredTime > 333) {
+			this.turret.fire(time, delta);
+		}
+	}
+
+	update(time: number, delta: number): void {
 	}
 }
