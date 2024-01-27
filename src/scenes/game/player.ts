@@ -83,13 +83,24 @@ export class Player {
 
 		//Update warning based on low stats
 		let warning = new Array<string>();
-		if (this.stats[0].value < 0.2) warning.push('Hungry');
-		if (this.stats[1].value < 0.2) warning.push('Bored');
-		if (this.stats[2].value < 0.2) warning.push('Tired');
-		if (this.stats[3].value < 0.2) warning.push('Poopy');
+		if (this.energy.value == 0) warning.push('Tired');
+		if (this.antiHunger.value == 0) warning.push('Hungry');
+		if (this.fun.value == 0) warning.push('Bored');
+		if (this.toilet.value == 0) warning.push('Poopy');
+
+		if (warning.length) {
+			this.warningLabel.setColor('red');
+		} else {
+			if (this.energy.value < 0.2) warning.push('Tired');
+			if (this.antiHunger.value < 0.2) warning.push('Hungry');
+			if (this.fun.value < 0.2) warning.push('Bored');
+			if (this.toilet.value < 0.2) warning.push('Poopy');
+			this.warningLabel.setColor('white');
+		}
 		this.warningLabel.text = warning.join(' ');
 		this.warningLabel.x = this.image.x;
 		this.warningLabel.y = this.image.y;
+
 
 		//Damage energy if other stats are low
 		for (let i = 1; i < this.stats.length; i++) {

@@ -76,7 +76,7 @@ export class Bullet extends DamageWeapon {
 		this.image.setCollisionCategory(scene.categoryBullet);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
-		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45)).scale(50);
+		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45)).scale(60);
 		//randomise a bit
 		direction.rotate(Phaser.Math.DegToRad(Phaser.Math.Between(-2, 2)));
 		this.image.setVelocity(direction.x, direction.y);

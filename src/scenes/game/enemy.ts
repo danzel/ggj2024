@@ -1,5 +1,6 @@
 import GameScene from "../gameScene";
 import { Depth } from "./depth";
+import { DamageWeapon, OvenFire } from "./weapons";
 
 export class Enemy {
 	image: Phaser.Physics.Matter.Image;
@@ -40,7 +41,28 @@ export class Enemy {
 		this.image.setDepth(Depth.Enemy + this.image.y / 1080);
 	}
 
-	receiveHitFromWeapon(weapon: any): void {
+	receiveHitFromWeapon(weapon: DamageWeapon): void {
+
+		let color = 0x440000;
+		if (!(weapon instanceof OvenFire)) {
+			color = Phaser.Math.Between(0x660000, 0xbb0000) & 0xff0000;
+		} else {
+			color = Phaser.Math.Between(0x110000, 0x440000) & 0xff0000;
+
+		}
+		let blood = this.scene.add.sprite(this.image.x, this.image.y, 'blood', Phaser.Math.Between(0, 3))
+			.setDepth(Depth.Background)
+			.setOrigin(.5, .5)
+			.setRotation(Math.random() * Math.PI * 2)
+			.setAlpha(0)
+			.setScale(0.2)
+			.setTint(color);
+		this.scene.tweens.add({
+			targets: blood,
+			duration: 200,
+			scale: 1,
+			alpha: 0.8
+		});
 		this.image.destroy();
 		this.scene.enemies.splice(this.scene.enemies.indexOf(this), 1);
 	}
