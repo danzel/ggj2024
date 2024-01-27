@@ -58,7 +58,7 @@ export class Player {
 				this.toilet.value = 0.25;
 				break;
 		}
-		this.image = scene.matter.add.image(x, y, 'player');
+		this.image = scene.matter.add.sprite(x, y, 'player', 0);
 		this.image.setDepth(Depth.Player);
 		this.image.setCircle(10);
 		this.image.setOrigin(.5, .8);
@@ -104,6 +104,8 @@ export class Player {
 
 	private _lastButtonA = false;
 
+	private movementTimer = 0;
+
 	update(time: number, delta: number): void {
 		this.image.setDepth(Depth.Player + this.image.y / 1080);
 		if (this.isDead) {
@@ -114,6 +116,9 @@ export class Player {
 			this.image.setFlipX(true);
 		else
 			this.image.setFlipX(false);
+
+		this.movementTimer += delta * new Phaser.Math.Vector2(this.body.velocity).length();
+		this.image.setFrame(Math.floor((this.movementTimer) / 200) % 4);
 
 		this.activeStatBar.bgGfx.x = this.image.x - 30;
 		this.activeStatBar.bgGfx.y = this.image.y - 10;
