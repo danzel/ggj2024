@@ -106,7 +106,7 @@ export class Bullet extends DamageWeapon {
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
 		//randomise a bit
-		direction.scale(60);
+		direction.scale(70);
 		direction.rotate(Phaser.Math.DegToRad(Phaser.Math.Between(-2, 2)));
 		this.image.setVelocity(direction.x, direction.y);
 
