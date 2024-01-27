@@ -84,15 +84,15 @@ export default class GameScene extends Phaser.Scene {
 		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 90, 80, 40));
 		this.controls.push(new TV(this, 1920 / 2 + 80, 1080 / 2 + 80, 50, 50));
 
-		let lawnMower = new LawnMower(this, 900, 780);
+		let lawnMower = new LawnMower(this, 870, 790);
 		this.weapons.push(lawnMower);
-		this.controls.push(new LawnMowerControl(this, 900, 700, 40, 40, lawnMower));
+		this.controls.push(new LawnMowerControl(this, 930, 800, 60, 80, lawnMower));
 
-		let turret = new MachineGunTurret(this, 1090, 530, -90, 90);
+		let turret = new MachineGunTurret(this, 1090, 540, -90, 90);
 		this.weapons.push(turret);
 		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 20, turret));
 
-		turret = new MachineGunTurret(this, 830, 560, 90, -90);
+		turret = new MachineGunTurret(this, 830, 570, 90, -90);
 		this.weapons.push(turret);
 		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 20, turret));
 
