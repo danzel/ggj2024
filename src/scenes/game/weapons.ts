@@ -57,6 +57,8 @@ export class Oven extends Weapon {
 		this.lastFiredTime = time;
 
 		new OvenFire(this.scene, this.image.x, this.image.y, Phaser.Math.RadToDeg(this.aimRotation));
+
+		//TODO: particles
 	}
 }
 

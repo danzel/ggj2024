@@ -1,6 +1,7 @@
 import GameScene from "../gameScene";
 import { Control, OvenControl, WeaponControl } from "./control";
 import { Depth } from "./depth";
+import { Enemy } from "./enemy";
 import { Stat } from "./stat";
 import { StatBar } from "./statBar";
 
@@ -19,6 +20,8 @@ export class Player {
 	usingControl: Control | null = null;
 	warningLabel: Phaser.GameObjects.Text;
 
+	isDead = false;
+
 	constructor(private scene: GameScene, private playerNumber: number) {
 
 		let x = 0, y = 0;
@@ -30,24 +33,28 @@ export class Player {
 				y = 300;
 				statPosX = 50;
 				statPosY = 50;
+				this.energy.value = 0.25;
 				break;
 			case 1:
 				x = 1920 - 300;
 				y = 300;
 				statPosX = 1920 - 200;
 				statPosY = 50;
+				this.antiHunger.value = 0.25;
 				break;
 			case 2:
 				x = 300;
 				y = 1080 - 300;
 				statPosX = 50;
 				statPosY = 1080 - 250;
+				this.fun.value = 0.25;
 				break;
 			case 3:
 				x = 1920 - 300;
 				y = 1080 - 300;
 				statPosX = 1920 - 200;
 				statPosY = 1080 - 250;
+				this.toilet.value = 0.25;
 				break;
 		}
 		this.image = scene.matter.add.image(x, y, 'player');
@@ -60,6 +67,7 @@ export class Player {
 		this.body.frictionAir = 0.8;
 		this.body.friction = 0.8;
 		this.body.restitution = 1;
+		this.image.setFixedRotation();
 
 
 		this.warningLabel = scene.add.text(x, y, 'Hungry Bored Tired Poopy', { color: 'white', fontSize: '20px', fontFamily: 'Hellovetica' })
@@ -73,17 +81,34 @@ export class Player {
 			new StatBar(scene, 'Fun', this.fun, statPosX, statPosY + 80),
 			new StatBar(scene, 'Toilet', this.toilet, statPosX, statPosY + 120),
 		];
+
+		(<MatterJS.BodyType>this.image.body).onCollideActiveCallback = (pair: MatterJS.IPair) => {
+			this.hitByEnemy((<any>pair.bodyA).enemy);
+			this.hitByEnemy((<any>pair.bodyB).enemy);
+		}
+	}
+
+	private hitByEnemy(enemy: Enemy | undefined) {
+		if (!enemy) return;
+
+		//fps hack
+		this.energy.value -= 0.1 / 60;
+		this.energy.value = Math.max(0, this.energy.value);
 	}
 
 	private _lastButtonA = false;
 
 	update(time: number, delta: number): void {
+		if (this.isDead) {
+			return;
+		}
+
 		this.stats.forEach(stat => stat.update(time, delta));
 		this.statBars.forEach(statBar => statBar.update(time, delta));
 
 		//Update warning based on low stats
 		let warning = new Array<string>();
-		if (this.energy.value == 0) warning.push('Tired');
+		if (this.energy.value < 0.1) warning.push('Tired');
 		if (this.antiHunger.value == 0) warning.push('Hungry');
 		if (this.fun.value == 0) warning.push('Bored');
 		if (this.toilet.value == 0) warning.push('Poopy');
@@ -91,10 +116,10 @@ export class Player {
 		if (warning.length) {
 			this.warningLabel.setColor('red');
 		} else {
-			if (this.energy.value < 0.2) warning.push('Tired');
-			if (this.antiHunger.value < 0.2) warning.push('Hungry');
-			if (this.fun.value < 0.2) warning.push('Bored');
-			if (this.toilet.value < 0.2) warning.push('Poopy');
+			if (this.energy.value < 0.25) warning.push('Tired');
+			if (this.antiHunger.value < 0.25) warning.push('Hungry');
+			if (this.fun.value < 0.25) warning.push('Bored');
+			if (this.toilet.value < 0.25) warning.push('Poopy');
 			this.warningLabel.setColor('white');
 		}
 		this.warningLabel.text = warning.join(' ');
@@ -106,7 +131,21 @@ export class Player {
 		for (let i = 1; i < this.stats.length; i++) {
 			if (this.stats[i].value == 0) {
 				this.energy.value -= delta / 10000;
+				this.energy.value = Math.max(0, this.energy.value);
 			}
+		}
+
+
+		if (this.energy.value == 0) {
+			//TODO: Particles
+
+			this.isDead = true;
+
+			this.image.setTexture('grave');
+			this.image.setOrigin(.5, .8);
+			this.image.setScale(.7);
+
+			return;
 		}
 
 		const p = this.scene.input.gamepad?.getPad(this.playerNumber);

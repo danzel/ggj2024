@@ -1,4 +1,5 @@
 import { Bed, Control, Kitchen, LawnMowerControl, MachineGunTurretControl, OvenControl, PoolControl, TV, Toilet } from "./game/control";
+import { Depth } from "./game/depth";
 import { Enemy } from "./game/enemy";
 import { House } from "./game/house";
 import { Player } from "./game/player";
@@ -96,13 +97,41 @@ export default class GameScene extends Phaser.Scene {
 		this.controls.push(new PoolControl(this, 430, 300, pool.width + 100, pool.height + 100, pool));
 	}
 
+	isGameOver = false;
+	aliveTime = 0;
+
 	update(time: number, delta: number): void {
+		this.aliveTime += delta;
+
 		this.players.forEach(player => player.update(time, delta));
 		this.controls.forEach(control => control.update(time, delta));
 		this.house.update(time, delta);
 
 
 		this.manageEnemies(time, delta);
+
+		if (this.players.every(p => p.isDead) && !this.isGameOver) {
+			this.isGameOver = true;
+
+			this.add.text(1920 / 2, 1080 / 2, 'Game Over', { color: 'white', fontSize: '100px', fontFamily: 'Hellovetica' })
+				.setStroke('#000', 4)
+				.setOrigin(0.5, 0.5)
+				.setDepth(Depth.UI);
+
+			this.add.text(1920 / 2, 1080 / 2 + 100, 'You survived for ' + (this.aliveTime / 1000).toFixed() + " seconds", { color: 'white', fontSize: '80px', fontFamily: 'Hellovetica' })
+				.setStroke('#000', 4)
+				.setOrigin(0.5, 0.5)
+				.setDepth(Depth.UI);
+
+			this.add.text(1920 / 2, 1080 / 2 + 200, "Restarting in 5 seconds", { color: 'white', fontSize: '50px', fontFamily: 'Hellovetica' })
+				.setStroke('#000', 4)
+				.setOrigin(0.5, 0.5)
+				.setDepth(Depth.UI);
+
+			this.time.delayedCall(5000, () => {
+				document.location.reload();
+			});
+		}
 	}
 
 	waveTimes = [
