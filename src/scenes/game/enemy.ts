@@ -12,7 +12,7 @@ export class Enemy {
 
 	constructor(private scene: GameScene, x: number, y: number, private speed: number, private health: number) {
 
-		let scale = 1 + health / 3;
+		let scale = 1 + health / 4;
 
 		this.image = scene.matter.add.sprite(x, y, 'enemy', 0);
 		this.image.setDepth(Depth.Enemy);
@@ -40,9 +40,9 @@ export class Enemy {
 		this.image.applyForce(force);
 
 		this.image.setFrame(Math.floor((this.animOffset + time) / 130) % 8);
-		if (this.body.velocity.x < -.02)
+		if (this.body.velocity.x < -.1)
 			this.image.setFlipX(true);
-		else if (this.body.velocity.x > .02)
+		else if (this.body.velocity.x > .1)
 			this.image.setFlipX(false);
 
 		this.image.setDepth(Depth.Enemy + this.image.y / 1080);

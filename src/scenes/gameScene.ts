@@ -50,6 +50,7 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('grave', 'assets/images/grave.png');
 		this.load.spritesheet('blood', 'assets/images/blood.png', { frameWidth: 256, frameHeight: 256 });
 		this.load.image('turret_barrel', 'assets/images/turret_barrel.png');
+		this.load.image('bullet', 'assets/images/bullet.png');
 
 		this.load.image('grass', 'assets/images/grass.png');
 		this.load.atlas('flares', 'assets/fromphaser/flares.png', 'assets/fromphaser/flares.json');
@@ -174,8 +175,11 @@ export default class GameScene extends Phaser.Scene {
 			}
 
 			this.nextWaveNumber++;
-			this.nextWaveSource = Phaser.Math.RND.pick([WaveSource.Surround, WaveSource.Left, WaveSource.Right, WaveSource.LeftRight, WaveSource.Above, WaveSource.Below, WaveSource.AboveBelow]);
-			this.nextWaveModifier = Phaser.Math.RND.pick([WaveModifier.None, WaveModifier.Fast, WaveModifier.Huge, WaveModifier.Early, WaveModifier.BigZombies]);
+			this.nextWaveSource = Phaser.Math.RND.pick([
+				WaveSource.Surround, WaveSource.Left, WaveSource.Right, WaveSource.LeftRight, WaveSource.Above, WaveSource.Below, WaveSource.AboveBelow,
+				WaveSource.Surround, WaveSource.Left, WaveSource.Right, WaveSource.LeftRight,
+			]);
+			this.nextWaveModifier = Phaser.Math.RND.pick([WaveModifier.None, WaveModifier.Fast, WaveModifier.Huge, WaveModifier.BigZombies]);
 
 			this.nextWaveTime += 30_000;
 		}
@@ -246,7 +250,7 @@ export default class GameScene extends Phaser.Scene {
 			label += " and they are big!";
 
 			speed *= 20;
-			health = 10;
+			health = 8;
 			size /= 5;
 		}
 
