@@ -40,6 +40,8 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
 
 		this.load.image('house', 'assets/images/house.png');
+		this.load.image('housejustwalls', 'assets/images/housejustwalls.png');
+
 		this.load.spritesheet('oven', 'assets/images/oven.png', { frameWidth: 40, frameHeight: 40 });
 		this.load.spritesheet('enemy', 'assets/images/enemy2.png', { frameWidth: 44, frameHeight: 65, endFrame: 8 });
 

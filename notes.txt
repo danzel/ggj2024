@@ -63,3 +63,14 @@ Control stations (places to control things from)
 Flames
 
 particles = gun fire, mower
+
+
+
+
+
+
+
+Art: player, mower, oven fire, control stations, building z axis
+Particles: machine gun, zombie death.
+
+Intro - What rooms mean, controls

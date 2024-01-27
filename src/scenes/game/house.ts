@@ -12,6 +12,23 @@ export class House {
 
 		scene.add.sprite(1920 / 2, 1080 / 2, 'house').setDepth(Depth.Background);
 
+		//Crops of the sprite with set z axis
+		// this.addCrop(0, 0, 1920, 1080 / 2);
+		// this.addCrop(0, 0, 1920 / 2, 1080);
+		this.addCrop(838, 418, 244, 31); //top wall
+		this.addCrop(840, 526, 106, 31); //top left room, bottom wall
+		this.addCrop(1006, 494, 66, 31); //top right room, bottom wall
+		this.addCrop(848, 570, 113, 31); //bottom left room, top wall
+		this.addCrop(996, 539, 77, 31); //bottom right room, top wall
+		this.addCrop(838, 652, 244, 34); //bottom wall
+
+		this.addCrop(838, 418, 11, 267); //left wall
+		this.addCrop(945, 418, 10, 138); //top left room, right wall
+		this.addCrop(1006, 418, 10, 106); //top right room, left wall
+		this.addCrop(995, 538, 10, 147); //bottom right room, left wall
+		this.addCrop(951, 570, 10, 115); //bottom left room, right wall
+		this.addCrop(1072, 418, 11, 267); //right wall
+
 		let w = [
 			[1920 / 2, 1080 / 2 - 96, 242, 8], //top
 			[1920 / 2 - 116, 1080 / 2 + 24, 8, 242], //left
@@ -61,6 +78,22 @@ export class House {
 		});
 
 		this.statBar = new HouseHealthStatBar(scene, this);
+	}
+
+	addCrop(x: number, y: number, w: number, h: number) {
+
+		let depth = Depth.Player;
+		if (w > h) {
+			depth += (y + h) / 1080;
+		} else {
+			depth += (y + h) / 1080;
+		}
+		this.scene.add.sprite(1920 / 2, 1080 / 2, 'housejustwalls')
+			//.setOrigin(.5, .5)
+			//.setTint(0xff0000)
+			//.setAlpha(0.5)
+			.setDepth(depth)
+			.setCrop(x, y, w, h);
 	}
 
 	private receiveHit(enemy: Enemy | undefined): void {

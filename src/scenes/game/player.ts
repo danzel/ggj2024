@@ -99,6 +99,7 @@ export class Player {
 	private _lastButtonA = false;
 
 	update(time: number, delta: number): void {
+		this.image.setDepth(Depth.Player + this.image.y / 1080);
 		if (this.isDead) {
 			return;
 		}
