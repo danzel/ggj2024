@@ -230,7 +230,7 @@ export class LawnMower extends DamageWeapon {
 		this.particles.setDepth(Depth.GrassParticles);
 
 
-		this.body.onCollideCallback = (pair: MatterJS.IPair) => {
+		this.body.onCollideActiveCallback = (pair: MatterJS.IPair) => {
 			//hit enemies
 			if (this.controller!.playerUsingThis) {
 

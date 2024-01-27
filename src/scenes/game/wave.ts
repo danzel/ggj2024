@@ -13,4 +13,6 @@ export enum WaveModifier {
 	Fast,
 	Huge,
 	Early,
+
+	BigZombies,
 }

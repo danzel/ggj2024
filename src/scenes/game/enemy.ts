@@ -10,13 +10,18 @@ export class Enemy {
 
 	isDestroyed = false;
 
-	constructor(private scene: GameScene, x: number, y: number, private speed: number) {
+	constructor(private scene: GameScene, x: number, y: number, private speed: number, private health: number) {
+
+		let scale = 1 + health / 3;
+
 		this.image = scene.matter.add.sprite(x, y, 'enemy', 0);
 		this.image.setDepth(Depth.Enemy);
-		this.image.setRectangle(18, 40);
+		this.image.setRectangle(18 * scale, 40 * scale);
 		this.image.setOrigin(.5, .6);
 		this.image.setFixedRotation();
 		this.image.setCollisionCategory(scene.categoryEnemy);
+		this.image.scale = scale;
+
 		this.body = <MatterJS.BodyType>this.image.body;
 
 		this.body.frictionAir = 0.8;
@@ -48,6 +53,10 @@ export class Enemy {
 		if (this.isDestroyed) {
 			return;
 		}
+		this.health--;
+
+
+
 		let color = 0x440000;
 		if (!(weapon instanceof OvenFire)) {
 			color = Phaser.Math.Between(0x660000, 0xbb0000) & 0xff0000;
@@ -68,8 +77,11 @@ export class Enemy {
 			scale: 1,
 			alpha: 0.8
 		});
-		this.image.destroy();
-		this.scene.enemies.splice(this.scene.enemies.indexOf(this), 1);
-		this.isDestroyed = true;
+		if (this.health == 0) {
+
+			this.image.destroy();
+			this.scene.enemies.splice(this.scene.enemies.indexOf(this), 1);
+			this.isDestroyed = true;
+		}
 	}
 }

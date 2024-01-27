@@ -156,7 +156,7 @@ export default class GameScene extends Phaser.Scene {
 
 	nextWaveNumber = 0;
 	nextWaveSource = WaveSource.Surround;
-	nextWaveModifier = WaveModifier.None;
+	nextWaveModifier = WaveModifier.BigZombies;
 	nextWaveTime = 4000;
 
 	manageEnemies(time: number, delta: number) {
@@ -173,20 +173,21 @@ export default class GameScene extends Phaser.Scene {
 
 			this.nextWaveNumber++;
 			this.nextWaveSource = Phaser.Math.RND.pick([WaveSource.Surround, WaveSource.Left, WaveSource.Right, WaveSource.LeftRight, WaveSource.Above, WaveSource.Below, WaveSource.AboveBelow]);
-			this.nextWaveModifier = Phaser.Math.RND.pick([WaveModifier.None, WaveModifier.Fast, WaveModifier.Huge, WaveModifier.Early]);
+			this.nextWaveModifier = Phaser.Math.RND.pick([WaveModifier.None, WaveModifier.Fast, WaveModifier.Huge, WaveModifier.Early, WaveModifier.BigZombies]);
 
 			this.nextWaveTime += 30_000;
 		}
 	}
 
-	leftSpawnZone = [-100, -100, 80, 1080 + 200];
+	leftSpawnZone = [-20 - 80, -100, 80, 1080 + 200];
 	rightSpawnZone = [1920 + 20, -100, 80, 1080 + 200];
-	aboveSpawnZone = [-100, -100, 1920 + 200, 80];
+	aboveSpawnZone = [-100, -20 - 80, 1920 + 200, 80];
 	belowSpawnZone = [-100, 1080 + 20, 1920 + 200, 80];
 
 	private spawnWave() {
-		let size = 10 + this.nextWaveNumber * 25;
-		let speed = 0.0003 + this.nextWaveNumber * 0.00005;
+		let size = 10 + this.nextWaveNumber * 20;
+		let speed = 0.0004 + this.nextWaveNumber * 0.00005;
+		let health = 1;
 
 		let label = "Zombies approach from ";
 
@@ -239,6 +240,14 @@ export default class GameScene extends Phaser.Scene {
 				throw new Error("Unknown WaveSource: " + this.nextWaveSource);
 		}
 
+		if (this.nextWaveModifier == WaveModifier.BigZombies) {
+			label += " and they are big!";
+
+			speed *= 20;
+			health = 10;
+			size /= 5;
+		}
+
 
 		let text = this.add.text(1920 / 2, 1080 / 2 - 300, label, { color: 'white', fontSize: '50px', fontFamily: 'Hellovetica' })
 			.setStroke('#000', 4)
@@ -264,7 +273,23 @@ export default class GameScene extends Phaser.Scene {
 			//random locatin in that zone	
 			let x = Phaser.Math.RND.between(spawnZone[0], spawnZone[0] + spawnZone[2]);
 			let y = Phaser.Math.RND.between(spawnZone[1], spawnZone[1] + spawnZone[3]);
-			this.enemies.push(new Enemy(this, x, y, speed));
+
+			if (this.nextWaveModifier == WaveModifier.BigZombies) {
+				if (Object.is(spawnZone, this.leftSpawnZone)) {
+					x -= 100;
+				}
+				else if (Object.is(spawnZone, this.rightSpawnZone)) {
+					x += 100;
+				}
+				else if (Object.is(spawnZone, this.aboveSpawnZone)) {
+					y -= 100;
+				}
+				else if (Object.is(spawnZone, this.belowSpawnZone)) {
+					y += 100;
+				}
+
+			}
+			this.enemies.push(new Enemy(this, x, y, speed, health));
 		}
 	}
 }
