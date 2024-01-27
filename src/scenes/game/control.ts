@@ -125,6 +125,9 @@ export class LawnMowerControl extends WeaponControl {
 
 	update(time: number, delta: number): void {
 		//todo if a player is controlling, put out some smoke particles
+		if (this.playerUsingThis) {
+			this.lawnMower.particles.emitParticleAt(this.lawnMower.image.x - 10 + Math.random() * 20, this.lawnMower.image.y - 10 + Math.random() * 20, 4);
+		}
 	}
 }
 

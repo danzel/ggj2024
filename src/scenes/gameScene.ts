@@ -49,6 +49,9 @@ export default class GameScene extends Phaser.Scene {
 		this.load.spritesheet('blood', 'assets/images/blood.png', { frameWidth: 256, frameHeight: 256 });
 		this.load.image('turret_barrel', 'assets/images/turret_barrel.png');
 
+		this.load.image('grass', 'assets/images/grass.png');
+		this.load.atlas('flares', 'assets/fromphaser/flares.png', 'assets/fromphaser/flares.json');
+
 		// load static assets from url
 		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
 		//this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
