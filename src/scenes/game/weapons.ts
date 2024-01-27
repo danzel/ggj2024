@@ -141,8 +141,13 @@ export class OvenFire extends DamageWeapon {
 
 		this.body.onCollideCallback = (pair: MatterJS.IPair) => {
 			//hit enemies
-			this.hit((<any>pair.bodyA).enemy);
-			this.hit((<any>pair.bodyB).enemy);
+			let hit = this.hit((<any>pair.bodyA).enemy);
+			hit ||= this.hit((<any>pair.bodyB).enemy);
+
+			if (hit) {
+				this.body.frictionAir = .2;
+				this.body.friction = .2;
+			}
 		};
 
 		this.scene.time.addEvent({
@@ -153,10 +158,11 @@ export class OvenFire extends DamageWeapon {
 		});
 	}
 
-	private hit(enemy: Enemy | undefined) {
-		if (!enemy) return;
+	private hit(enemy: Enemy | undefined): boolean {
+		if (!enemy) return false;
 
 		enemy.receiveHitFromWeapon(this);
+		return true;
 	}
 }
 

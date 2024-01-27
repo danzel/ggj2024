@@ -153,7 +153,7 @@ export class MachineGunTurretControl extends WeaponControl {
 			}
 		}
 
-		if (p.B && time - this.turret.lastFiredTime > 333) {
+		if (p.B && time - this.turret.lastFiredTime > 166) {
 			this.turret.fire(time, delta);
 		}
 	}
