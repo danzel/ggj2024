@@ -2,6 +2,8 @@ import GameScene from "../gameScene";
 import { LawnMowerControl, MachineGunTurretControl, OvenControl, PoolControl } from "./control";
 import { Depth } from "./depth";
 import { Enemy } from "./enemy";
+import { Stat } from "./stat";
+import { StatBar } from "./statBar";
 
 export abstract class Weapon {
 
@@ -283,13 +285,35 @@ export class Pool extends DamageWeapon {
 	width = 180;
 	height = 300;
 
-	maxEnemiesInside = 10;
+	maxEnemiesInside = 40;
 	enemiesInside = 0;
 	lastTimeCleaned: number = 0;
 	fullLabel: Phaser.GameObjects.Text;
 
+	fullStat = new Stat(0);
+	statbar: StatBar;
+	fullImage: Phaser.GameObjects.Image;
+
 	constructor(private scene: GameScene, x: number, y: number) {
 		super();
+
+
+		this.fullImage = scene.add.image(x, y, 'pools_full');
+		this.fullImage.alpha = 0;
+
+		this.fullStat.value = 1;
+		this.statbar = new StatBar(scene, 'Fullness', this.fullStat, x - 100, y, 0x0000ff);
+
+		scene.time.addEvent({
+			repeat: -1,
+			delay: .16,
+			callback: () => {
+				this.fullStat.value = 1 - this.enemiesInside / this.maxEnemiesInside;
+				this.statbar.update(0, 0);
+				this.fullImage.alpha = 1 - this.fullStat.value;
+			}
+
+		})
 
 		//Blocker for players
 		this.scene.matter.add.rectangle(x, y, this.width, this.height, {

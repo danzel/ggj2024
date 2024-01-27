@@ -41,6 +41,7 @@ export default class GameScene extends Phaser.Scene {
 
 		this.load.image('house', 'assets/images/house.png');
 		this.load.image('housejustwalls', 'assets/images/housejustwalls.png');
+		this.load.image('pools_full', 'assets/images/pools_full.png');
 
 		this.load.spritesheet('oven', 'assets/images/oven.png', { frameWidth: 40, frameHeight: 40 });
 		this.load.spritesheet('mower', 'assets/images/mower.png', { frameWidth: 40, frameHeight: 40 });
@@ -109,7 +110,7 @@ export default class GameScene extends Phaser.Scene {
 		this.controls.push(new OvenControl(this, 1000, 500, 50, oven));
 
 
-		let pool = new Pool(this, 430, 300);
+		let pool = new Pool(this, 426, 302);
 		this.weapons.push(pool);
 		this.controls.push(new PoolControl(this, 430, 300, pool.width + 100, pool.height + 100, pool));
 
@@ -163,7 +164,7 @@ export default class GameScene extends Phaser.Scene {
 		this.nextWaveInText.setText(label);
 	}
 
-	nextWaveNumber = 0;
+	nextWaveNumber = 20;
 	nextWaveSource = WaveSource.Surround;
 	nextWaveModifier = WaveModifier.None;
 	nextWaveTime = 4000;
