@@ -40,9 +40,9 @@ export class Enemy {
 		this.image.applyForce(force);
 
 		this.image.setFrame(Math.floor((this.animOffset + time) / 130) % 8);
-		if (this.body.velocity.x < 0)
+		if (this.body.velocity.x < -.02)
 			this.image.setFlipX(true);
-		else
+		else if (this.body.velocity.x > .02)
 			this.image.setFlipX(false);
 
 		this.image.setDepth(Depth.Enemy + this.image.y / 1080);
@@ -89,11 +89,9 @@ export class Enemy {
 				targets: this.image,
 				alpha: 0,
 				duration: 900,
-				angle: 90
+				angle: 90,
+				onComplete: () => { this.image.destroy(); }
 			})
-			this.scene.time.delayedCall(1000, () => {
-				this.image.destroy();
-			});
 		}
 	}
 }
