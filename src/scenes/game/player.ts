@@ -1,5 +1,6 @@
 import GameScene from "../gameScene";
 import { Control, WeaponControl } from "./control";
+import { Depth } from "./depth";
 import { Stat } from "./stat";
 import { StatBar } from "./statBar";
 
@@ -20,6 +21,7 @@ export class Player {
 	constructor(private scene: GameScene, private playerNumber: number) {
 
 		this.image = scene.matter.add.image(1000, 500, 'player');
+		this.image.setDepth(Depth.Player);
 		this.image.setCircle(10);
 		this.image.setCollisionCategory(scene.categoryPlayer);
 		this.image.setCollidesWith([scene.categoryPlayer, scene.categoryWall, scene.categoryEnemy, scene.categoryLawnMower, scene.categoryTurret, scene.categoryBullet, scene.categoryControlSensor, scene.categoryOvenFire, scene.categoryPool])

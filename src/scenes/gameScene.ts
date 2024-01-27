@@ -36,9 +36,11 @@ export default class GameScene extends Phaser.Scene {
 		// load static from our public dir
 		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
 
+		this.load.image('house', 'assets/images/house.png');
+
 		// load static assets from url
-		this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
-		this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
+		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
+		//this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
 	}
 
 	create() {
@@ -60,25 +62,25 @@ export default class GameScene extends Phaser.Scene {
 
 		this.house = new House(this);
 
-		this.controls.push(new Toilet(this, 1920 / 2 + 0, 1080 / 2 + 200, 100, 100));
-		this.controls.push(new Bed(this, 1920 / 2 + 200, 1080 / 2 + 200, 100, 100));
-		this.controls.push(new Kitchen(this, 1920 / 2 + 400, 1080 / 2 + 200, 100, 100));
-		this.controls.push(new TV(this, 1920 / 2 + 600, 1080 / 2 + 200, 100, 100));
+		this.controls.push(new Toilet(this, 1920 / 2 + 84, 1080 / 2 - 80, 50, 40));
+		this.controls.push(new Bed(this, 1920 / 2 - 80, 1080 / 2 - 40, 50, 50));
+		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 80, 80, 40));
+		this.controls.push(new TV(this, 1920 / 2 + 80, 1080 / 2 + 80, 50, 50));
 
 		let lawnMower = new LawnMower(this, 400, 700);
 		this.weapons.push(lawnMower);
 		this.controls.push(new LawnMowerControl(this, 1920 / 2 - 200, 1080 / 2 + 200, 100, 100, lawnMower));
 
-		let turret = new MachineGunTurret(this, 1200, 500, -90, 90);
+		let turret = new MachineGunTurret(this, 1090, 530, -90, 90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 1100, 450, 100, 100, turret));
+		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 30, turret));
 
-		turret = new MachineGunTurret(this, 700, 500, 90, -90);
+		turret = new MachineGunTurret(this, 830, 560, 90, -90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 800, 450, 100, 100, turret));
+		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 30, turret));
 
 
-		let oven = new Oven(this, 1000, 500);
+		let oven = new Oven(this, 1000, 800);
 		this.weapons.push(oven);
 		this.controls.push(new OvenControl(this, 1000, 500, 50, oven));
 

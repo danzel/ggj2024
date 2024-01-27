@@ -3,7 +3,7 @@ export class Stat {
 	public value: number;
 
 	constructor(private decreasePerSecond: number) {
-		this.value = .25 + Math.random() * .5
+		this.value = .5 + Math.random() * .5
 	}
 
 	update(time: number, delta: number): void {

@@ -1,5 +1,6 @@
 import GameScene from "../gameScene";
 import { LawnMowerControl, MachineGunTurretControl, OvenControl, PoolControl } from "./control";
+import { Depth } from "./depth";
 import { Enemy } from "./enemy";
 
 export abstract class Weapon {
@@ -16,6 +17,7 @@ export class MachineGunTurret extends Weapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'gunTurret');
+		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(30, { isStatic: true });
 		this.image.setCollisionCategory(scene.categoryTurret);
 		this.image.angle = minAngleDegree;
@@ -40,6 +42,7 @@ export class Oven extends Weapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'oven');
+		this.image.setDepth(Depth.Weapon);
 		this.image.setRectangle(30, 30);
 		this.image.setFriction(.8, .8, 1);
 		this.image.setCollisionCategory(scene.categoryTurret);
@@ -66,7 +69,8 @@ export class Bullet extends DamageWeapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'bullet');
-		this.image.setCircle(5);
+		this.image.setDepth(Depth.Weapon);
+		this.image.setRectangle(20, 5);
 		this.image.setCollisionCategory(scene.categoryBullet);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
@@ -112,6 +116,7 @@ export class OvenFire extends DamageWeapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'ovenfire');
+		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(15, { restitution: 0.2 });
 		this.image.setCollisionCategory(scene.categoryOvenFire);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
@@ -156,6 +161,7 @@ export class LawnMower extends DamageWeapon {
 		super();
 
 		this.image = scene.matter.add.image(x, y, 'lawnmower');
+		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(20);
 		this.image.setCollisionCategory(scene.categoryLawnMower);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryTurret, scene.categoryBullet])

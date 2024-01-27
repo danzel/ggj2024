@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Hellovetica';
+    src: url('HelloveticaReg.woff2') format('woff2'),
+        url('HelloveticaReg.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
