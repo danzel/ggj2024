@@ -197,6 +197,7 @@ export class Player {
 			//TODO: Particles
 
 			this.isDead = true;
+			this.scene.sound.play('scream');
 
 			this.image.setTexture('grave');
 			this.image.setOrigin(.5, .8);

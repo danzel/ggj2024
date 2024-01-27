@@ -175,6 +175,7 @@ export class MachineGunTurretControl extends WeaponControl {
 		}
 
 		if (p.B && time - this.turret.lastFiredTime > 166) {
+			this.scene.sound.play(Phaser.Math.RND.pick(['gun1', 'gun2']));
 			this.turret.fire(time, delta);
 		}
 	}

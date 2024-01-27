@@ -78,6 +78,7 @@ export class Enemy {
 			alpha: 0.8
 		});
 		if (this.health == 0) {
+			this.scene.sound.play(Phaser.Math.RND.pick(['die1', 'die2', 'die3', 'die4', 'die5']));
 
 			this.image.setCollidesWith([]);
 

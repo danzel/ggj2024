@@ -63,6 +63,25 @@ export default class GameScene extends Phaser.Scene {
 		this.load.atlas('flares', 'assets/fromphaser/flares.png', 'assets/fromphaser/flares.json');
 
 
+		this.load.audio('spawn1', 'assets/sound/spawn/groan.ogg');
+		this.load.audio('spawn2', 'assets/sound/spawn/groan2.ogg');
+		this.load.audio('spawn3', 'assets/sound/spawn/groan3.ogg');
+		this.load.audio('spawn4', 'assets/sound/spawn/groan4.ogg');
+		this.load.audio('spawn5', 'assets/sound/spawn/groan5.ogg');
+		this.load.audio('spawn6', 'assets/sound/spawn/groan6.ogg');
+
+		this.load.audio('die1', 'assets/sound/die/bonk.ogg');
+		this.load.audio('die2', 'assets/sound/die/juicy.ogg');
+		this.load.audio('die3', 'assets/sound/die/limbs_pop.ogg');
+		this.load.audio('die4', 'assets/sound/die/melonimpact.ogg');
+		this.load.audio('die5', 'assets/sound/die/melonimpact2.ogg');
+
+		this.load.audio('gun1', 'assets/sound/gun/tap.ogg');
+		this.load.audio('gun2', 'assets/sound/gun/tap2.ogg');
+
+		this.load.audio('scream', 'assets/sound/scream.ogg');
+
+
 		// load static assets from url
 		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
 		//this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
@@ -78,6 +97,7 @@ export default class GameScene extends Phaser.Scene {
 		this.categoryControlSensor = this.matter.world.nextCategory();
 		this.categoryOvenFire = this.matter.world.nextCategory();
 		this.categoryPool = this.matter.world.nextCategory();
+
 
 
 		for (let i = 0; i < 4; i++) {
@@ -136,6 +156,7 @@ export default class GameScene extends Phaser.Scene {
 
 		if ((this.players.every(p => p.isDead) || this.house.health == 0) && !this.isGameOver) {
 			this.isGameOver = true;
+			this.sound.play('scream');
 
 			this.add.text(1920 / 2, 1080 / 2, 'Game Over', { color: 'white', fontSize: '100px', fontFamily: 'Hellovetica' })
 				.setStroke('#000', 4)
@@ -164,7 +185,7 @@ export default class GameScene extends Phaser.Scene {
 		this.nextWaveInText.setText(label);
 	}
 
-	nextWaveNumber = 20;
+	nextWaveNumber = 0;
 	nextWaveSource = WaveSource.Surround;
 	nextWaveModifier = WaveModifier.None;
 	nextWaveTime = 4000;
@@ -198,6 +219,8 @@ export default class GameScene extends Phaser.Scene {
 	belowSpawnZone = [-100, 1080 + 20, 1920 + 200, 80];
 
 	private spawnWave() {
+		this.sound.play(Phaser.Math.RND.pick(['spawn1', 'spawn2', 'spawn3', 'spawn4', 'spawn5', 'spawn6']));
+
 		let size = 10 + this.nextWaveNumber * 20;
 		let speed = 0.0004 + this.nextWaveNumber * 0.00005;
 		let health = 1;

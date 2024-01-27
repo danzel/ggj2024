@@ -8,7 +8,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	height: 1080,
 	antialias: false,
 	scale: {
-		mode: Phaser.Scale.ScaleModes.FIT,
+		mode: Phaser.Scale.ScaleModes.NONE,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 	},
 	physics: {
