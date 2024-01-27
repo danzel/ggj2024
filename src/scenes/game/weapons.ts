@@ -151,11 +151,13 @@ export class OvenFire extends DamageWeapon {
 		this.image.setCircle(15, { restitution: 0.2 });
 		this.image.setCollisionCategory(scene.categoryOvenFire);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
-		this.image.angle = angle;
+		//this.image.angle = angle;
 		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45)).scale(20);
 		//randomise a bit
 		direction.rotate(Phaser.Math.DegToRad(Phaser.Math.Between(-20, 20)));
 		this.image.setVelocity(direction.x, direction.y);
+		this.image.scale = 1.4;
+		this.image.setOrigin(0.5, .8);
 
 		this.body = <MatterJS.BodyType>this.image.body;
 		this.body.frictionAir = 0.1;
@@ -172,11 +174,22 @@ export class OvenFire extends DamageWeapon {
 			}
 		};
 
+		let time = 0;
 		this.scene.time.addEvent({
-			delay: 2000,
+			repeat: 20,
+			delay: 100,
+
 			callback: () => {
-				this.image.destroy();
-			}
+				this.image.setFrame(time % 8);
+				time++;
+				if (time > 16) {
+					this.image.alpha = 1 - (time - 16) / 4;
+				}
+				if (time == 20) {
+					this.image.destroy();
+				}
+			},
+
 		});
 	}
 

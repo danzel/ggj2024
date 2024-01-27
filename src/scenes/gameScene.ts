@@ -47,6 +47,8 @@ export default class GameScene extends Phaser.Scene {
 		this.load.spritesheet('enemy', 'assets/images/enemy2.png', { frameWidth: 44, frameHeight: 65, endFrame: 8 });
 		this.load.spritesheet('player', 'assets/images/player.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
 
+		this.load.spritesheet('ovenfire', 'assets/images/burning_loop_1.png', { frameWidth: 24, frameHeight: 32, endFrame: 8 });
+
 		this.load.image('grave', 'assets/images/grave.png');
 		this.load.spritesheet('blood', 'assets/images/blood.png', { frameWidth: 256, frameHeight: 256 });
 		this.load.image('turret_barrel', 'assets/images/turret_barrel.png');
