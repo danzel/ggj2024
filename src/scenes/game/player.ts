@@ -27,6 +27,7 @@ export class Player {
 
 		let x = 0, y = 0;
 		let statPosX = 0, statPosY = 0;
+		let color = 0;
 
 		switch (playerNumber) {
 			case 0:
@@ -35,6 +36,7 @@ export class Player {
 				statPosX = 50;
 				statPosY = 50;
 				this.energy.value = 0.25;
+				color = 0xe03f52
 				break;
 			case 1:
 				x = 1920 - 300;
@@ -42,6 +44,7 @@ export class Player {
 				statPosX = 1920 - 200;
 				statPosY = 50;
 				this.antiHunger.value = 0.25;
+				color = 0x4c74e4;
 				break;
 			case 2:
 				x = 300;
@@ -49,6 +52,7 @@ export class Player {
 				statPosX = 50;
 				statPosY = 1080 - 250;
 				this.fun.value = 0.25;
+				color = 0x5ab88a;
 				break;
 			case 3:
 				x = 1920 - 300;
@@ -56,9 +60,11 @@ export class Player {
 				statPosX = 1920 - 200;
 				statPosY = 1080 - 250;
 				this.toilet.value = 0.25;
+				color = 0xe09e3f;
 				break;
 		}
-		this.image = scene.matter.add.sprite(x, y, 'player', 0);
+
+		this.image = scene.matter.add.sprite(x, y, 'player' + (playerNumber + 1), 0);
 		this.image.setDepth(Depth.Player);
 		this.image.setCircle(10);
 		this.image.setOrigin(.5, .8);
@@ -78,13 +84,13 @@ export class Player {
 			.setDepth(Depth.UI);
 
 		this.statBars = [
-			new StatBar(scene, 'Energy', this.energy, statPosX, statPosY),
-			new StatBar(scene, 'Hunger', this.antiHunger, statPosX, statPosY + 40),
-			new StatBar(scene, 'Fun', this.fun, statPosX, statPosY + 80),
-			new StatBar(scene, 'Toilet', this.toilet, statPosX, statPosY + 120),
+			new StatBar(scene, 'Energy', this.energy, statPosX, statPosY, color),
+			new StatBar(scene, 'Hunger', this.antiHunger, statPosX, statPosY + 40, color),
+			new StatBar(scene, 'Fun', this.fun, statPosX, statPosY + 80, color),
+			new StatBar(scene, 'Toilet', this.toilet, statPosX, statPosY + 120, color),
 		];
 
-		this.activeStatBar = new StatBar(scene, '', this.energy, x, y);
+		this.activeStatBar = new StatBar(scene, '', this.energy, x, y, 0xffffff);
 		this.activeStatBar.bgGfx.scale = 0.3;
 		this.activeStatBar.gfx.scale = 0.3;
 

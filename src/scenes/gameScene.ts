@@ -46,6 +46,10 @@ export default class GameScene extends Phaser.Scene {
 		this.load.spritesheet('mower', 'assets/images/mower.png', { frameWidth: 40, frameHeight: 40 });
 		this.load.spritesheet('enemy', 'assets/images/enemy2.png', { frameWidth: 44, frameHeight: 65, endFrame: 8 });
 		this.load.spritesheet('player', 'assets/images/player.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
+		this.load.spritesheet('player1', 'assets/images/player1.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
+		this.load.spritesheet('player2', 'assets/images/player2.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
+		this.load.spritesheet('player3', 'assets/images/player3.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
+		this.load.spritesheet('player4', 'assets/images/player4.png', { frameWidth: 40, frameHeight: 40, endFrame: 4 });
 
 		this.load.spritesheet('ovenfire', 'assets/images/burning_loop_1.png', { frameWidth: 24, frameHeight: 32, endFrame: 8 });
 

@@ -7,18 +7,18 @@ export class StatBar {
 	gfx: Phaser.GameObjects.Graphics;
 	bgGfx: Phaser.GameObjects.Graphics;
 	text: Phaser.GameObjects.Text;
-	constructor(scene: GameScene, name: string, public stat: Stat, x: number, y: number) {
+	constructor(scene: GameScene, name: string, public stat: Stat, x: number, y: number, color: number) {
 
 
 		this.bgGfx = scene.add.graphics();
 		this.bgGfx.setDepth(Depth.UI);
-		this.bgGfx.fillStyle(0xff0000, 1);
+		this.bgGfx.fillStyle(0x000000, 1);
 		this.bgGfx.fillRect(0, 0, 200, 20);
 		this.bgGfx.setPosition(x, y);
 
 		this.gfx = scene.add.graphics();
 		this.gfx.setDepth(Depth.UI);
-		this.gfx.fillStyle(0x00ff00, 1);
+		this.gfx.fillStyle(color, 1);
 		this.gfx.fillRect(0, 0, 200 - 2, 20 - 2);
 		this.gfx.setPosition(x + 1, y + 1);
 
@@ -42,17 +42,17 @@ export class HouseHealthStatBar {
 
 		this.bgGfx = scene.add.graphics();
 		this.bgGfx.setDepth(Depth.UI);
-		this.bgGfx.fillStyle(0xff0000, 1);
+		this.bgGfx.fillStyle(0x000000, 1);
 		this.bgGfx.fillRect(0, 0, w, h);
 		this.bgGfx.setPosition((1920 - w) / 2, 40);
 
 		this.gfx = scene.add.graphics();
 		this.gfx.setDepth(Depth.UI);
-		this.gfx.fillStyle(0x00ff00, 1);
+		this.gfx.fillStyle(0xffffff, 1);
 		this.gfx.fillRect(0, 0, w - 4, h - 4);
 		this.gfx.setPosition((1920 - w + 4) / 2, 40 + 2);
 
-		scene.add.text(1920 / 2, 44, "Flat Health", { fontSize: '20px', color: '#fff', fontFamily: 'Hellovetica' })
+		scene.add.text(1920 / 2, 40, "Flat Health", { fontSize: '20px', color: '#fff', fontFamily: 'Hellovetica' })
 			.setStroke('#000', 4)
 			.setOrigin(0.5, 0)
 			.setDepth(Depth.UI);
