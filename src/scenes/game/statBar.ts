@@ -49,7 +49,7 @@ export class HouseHealthStatBar {
 		this.gfx.fillRect(0, 0, w - 4, h - 4);
 		this.gfx.setPosition((1920 - w + 4) / 2, 40 + 2);
 
-		scene.add.text(1920 / 2 - 20, 44, "House", { fontSize: '20px', color: '#000', fontFamily: 'Hellovetica' }).setDepth(Depth.UI);
+		scene.add.text(1920 / 2 - 40, 44, "House", { fontSize: '20px', color: '#000', fontFamily: 'Hellovetica' }).setDepth(Depth.UI);
 	}
 
 	update(time: number, delta: number): void {

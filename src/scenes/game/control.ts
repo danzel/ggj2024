@@ -52,6 +52,7 @@ export abstract class Control {
 	abstract update(time: number, delta: number): void;
 }
 
+const amountToIncrease = 0.3;
 export class Toilet extends Control {
 	constructor(scene: GameScene, x: number, y: number, w: number, h: number) {
 		super(scene, x, y, w, h);
@@ -59,7 +60,7 @@ export class Toilet extends Control {
 
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
-			this.playerUsingThis.toilet.value = Math.min(1, this.playerUsingThis.toilet.value + 0.1 * delta / 1000);
+			this.playerUsingThis.toilet.value = Math.min(1, this.playerUsingThis.toilet.value + amountToIncrease * delta / 1000);
 		}
 	}
 }
@@ -71,7 +72,7 @@ export class Bed extends Control {
 
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
-			this.playerUsingThis.energy.value = Math.min(1, this.playerUsingThis.energy.value + 0.1 * delta / 1000);
+			this.playerUsingThis.energy.value = Math.min(1, this.playerUsingThis.energy.value + amountToIncrease * delta / 1000);
 		}
 	}
 }
@@ -83,7 +84,7 @@ export class Kitchen extends Control {
 
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
-			this.playerUsingThis.antiHunger.value = Math.min(1, this.playerUsingThis.antiHunger.value + 0.1 * delta / 1000);
+			this.playerUsingThis.antiHunger.value = Math.min(1, this.playerUsingThis.antiHunger.value + amountToIncrease * delta / 1000);
 		}
 	}
 }
@@ -95,7 +96,7 @@ export class TV extends Control {
 
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
-			this.playerUsingThis.fun.value = Math.min(1, this.playerUsingThis.fun.value + 0.1 * delta / 1000);
+			this.playerUsingThis.fun.value = Math.min(1, this.playerUsingThis.fun.value + amountToIncrease * delta / 1000);
 		}
 	}
 }
@@ -136,7 +137,7 @@ export class MachineGunTurretControl extends WeaponControl {
 	receiveInput(p: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
 		let x = p.axes[0].getValue();
 		if (x > 0.1 || x < -0.1) {
-			let rotation = delta / 1000 * 30 * x;
+			let rotation = delta / 1000 * 40 * x;
 
 			if (this.turret.minAngleDegree < this.turret.maxAngleDegree) {
 				this.turret.image.angle = Phaser.Math.Clamp(this.turret.image.angle + rotation, this.turret.minAngleDegree, this.turret.maxAngleDegree);
@@ -181,7 +182,20 @@ export class OvenControl extends WeaponControl {
 			if (controllerAngle.length() > 0.1) {
 				this.oven.image.applyForce(controllerAngle.clone().scale(0.003));
 
-				this.oven.image.rotation = Phaser.Math.Angle.RotateTo(this.oven.image.rotation, controllerAngle.angle(), 2 * delta / 1000);
+				this.oven.aimRotation = Phaser.Math.Angle.RotateTo(this.oven.aimRotation, controllerAngle.angle(), 2 * delta / 1000);
+
+				//Set frame by angle
+				let r = (Phaser.Math.RadToDeg(this.oven.aimRotation) + 360) % 360;
+				if (r > 360 - 45 || r < 45)
+					this.oven.image.setFrame(1);
+				else if (r > 45 && r < 135)
+					this.oven.image.setFrame(2);
+				else if (r > 135 && r < 135 + 90)
+					this.oven.image.setFrame(0);
+				else if (r > 360 - 45 - 90 && r < 360 - 45)
+					this.oven.image.setFrame(3);
+				console.log(r, this.oven.image.frame.name)
+				//this.oven.image.rotation = Phaser.Math.Angle.RotateTo(this.oven.image.rotation, controllerAngle.angle(), 2 * delta / 1000);
 			}
 		}
 	}
@@ -214,8 +228,7 @@ export class PoolControl extends WeaponControl {
 	update(time: number, delta: number): void {
 		if (this.playerUsingThis) {
 			if (time - this.pool.lastTimeCleaned > 200) {
-				this.pool.enemiesInside--;
-				this.pool.enemiesInside = Math.max(0, this.pool.enemiesInside);
+				this.pool.decreaseEnemiesInside();
 				this.pool.lastTimeCleaned = time;
 			}
 		}

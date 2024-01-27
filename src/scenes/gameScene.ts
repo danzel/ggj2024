@@ -37,6 +37,7 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
 
 		this.load.image('house', 'assets/images/house.png');
+		this.load.spritesheet('oven', 'assets/images/oven.png', { frameWidth: 40, frameHeight: 40 });
 
 		// load static assets from url
 		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
@@ -63,8 +64,8 @@ export default class GameScene extends Phaser.Scene {
 		this.house = new House(this);
 
 		this.controls.push(new Toilet(this, 1920 / 2 + 84, 1080 / 2 - 80, 50, 40));
-		this.controls.push(new Bed(this, 1920 / 2 - 80, 1080 / 2 - 40, 50, 50));
-		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 80, 80, 40));
+		this.controls.push(new Bed(this, 1920 / 2 - 80, 1080 / 2 - 60, 50, 50));
+		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 90, 80, 40));
 		this.controls.push(new TV(this, 1920 / 2 + 80, 1080 / 2 + 80, 50, 50));
 
 		let lawnMower = new LawnMower(this, 400, 700);
@@ -73,11 +74,11 @@ export default class GameScene extends Phaser.Scene {
 
 		let turret = new MachineGunTurret(this, 1090, 530, -90, 90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 30, turret));
+		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 20, turret));
 
 		turret = new MachineGunTurret(this, 830, 560, 90, -90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 30, turret));
+		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 20, turret));
 
 
 		let oven = new Oven(this, 1000, 800);

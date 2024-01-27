@@ -17,10 +17,40 @@ export class Player {
 
 	onControl: Control | null = null;
 	usingControl: Control | null = null;
+	warningLabel: Phaser.GameObjects.Text;
 
 	constructor(private scene: GameScene, private playerNumber: number) {
 
-		this.image = scene.matter.add.image(1000, 500, 'player');
+		let x = 0, y = 0;
+		let statPosX = 0, statPosY = 0;
+
+		switch (playerNumber) {
+			case 0:
+				x = 300;
+				y = 300;
+				statPosX = 50;
+				statPosY = 50;
+				break;
+			case 1:
+				x = 1920 - 300;
+				y = 300;
+				statPosX = 1920 - 200;
+				statPosY = 50;
+				break;
+			case 2:
+				x = 300;
+				y = 1080 - 300;
+				statPosX = 50;
+				statPosY = 1080 - 250;
+				break;
+			case 3:
+				x = 1920 - 300;
+				y = 1080 - 300;
+				statPosX = 1920 - 200;
+				statPosY = 1080 - 250;
+				break;
+		}
+		this.image = scene.matter.add.image(x, y, 'player');
 		this.image.setDepth(Depth.Player);
 		this.image.setCircle(10);
 		this.image.setCollisionCategory(scene.categoryPlayer);
@@ -31,27 +61,8 @@ export class Player {
 		this.body.friction = 0.8;
 		this.body.restitution = 1;
 
-		let statPosX = 0, statPosY = 0;
 
-		switch (playerNumber) {
-			case 0:
-				statPosX = 50;
-				statPosY = 50;
-				break;
-			case 1:
-				statPosX = 1920 - 200;
-				statPosY = 50;
-				break;
-			case 2:
-				statPosX = 50;
-				statPosY = 1080 - 250;
-				break;
-			case 3:
-				statPosX = 1920 - 200;
-				statPosY = 1080 - 250;
-				break;
-		}
-
+		this.warningLabel = scene.add.text(x, y, 'Hungry Bored Tired Poopy', { color: 'red', fontSize: '20px', fontFamily: 'Hellovetica' }).setOrigin(0.5, 1.5).setDepth(Depth.UI);
 
 		this.statBars = [
 			new StatBar(scene, 'Hunger', this.antiHunger, statPosX, statPosY),
@@ -66,6 +77,16 @@ export class Player {
 	update(time: number, delta: number): void {
 		this.stats.forEach(stat => stat.update(time, delta));
 		this.statBars.forEach(statBar => statBar.update(time, delta));
+
+		//Update warning based on low stats
+		let warning = new Array<string>();
+		if (this.stats[0].value < 0.2) warning.push('Hungry');
+		if (this.stats[1].value < 0.2) warning.push('Bored');
+		if (this.stats[2].value < 0.2) warning.push('Tired');
+		if (this.stats[3].value < 0.2) warning.push('Poopy');
+		this.warningLabel.text = warning.join(' ');
+		this.warningLabel.x = this.image.x;
+		this.warningLabel.y = this.image.y;
 
 		const p = this.scene.input.gamepad?.getPad(this.playerNumber);
 		if (!p) return;
@@ -87,10 +108,12 @@ export class Player {
 			if (this.usingControl) {
 				this.usingControl.playerUsingThis = null;
 				this.usingControl = null;
+				this.body.isStatic = false;
 			} else if (this.onControl) {
 				if (!this.onControl.playerUsingThis) {
 					this.onControl.playerUsingThis = this;
 					this.usingControl = this.onControl;
+					this.body.isStatic = true;
 				}
 			}
 		}

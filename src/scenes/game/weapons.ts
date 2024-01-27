@@ -35,15 +35,17 @@ export class MachineGunTurret extends Weapon {
 
 export class Oven extends Weapon {
 	controller: OvenControl = null!;
-	image: Phaser.Physics.Matter.Image;
+	image: Phaser.Physics.Matter.Sprite;
 	lastFiredTime: number = 0;
+	aimRotation: number = 0;
 
 	constructor(private scene: GameScene, x: number, y: number) {
 		super();
 
-		this.image = scene.matter.add.image(x, y, 'oven');
+		this.image = scene.matter.add.sprite(x, y, 'oven', 0);
 		this.image.setDepth(Depth.Weapon);
 		this.image.setRectangle(30, 30);
+		this.image.setFixedRotation();
 		this.image.setFriction(.8, .8, 1);
 		this.image.setCollisionCategory(scene.categoryTurret);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryLawnMower, scene.categoryPlayer, scene.categoryWall, scene.categoryBullet, scene.categoryTurret]);
@@ -52,7 +54,7 @@ export class Oven extends Weapon {
 	fire(time: number, delta: number) {
 		this.lastFiredTime = time;
 
-		new OvenFire(this.scene, this.image.x, this.image.y, this.image.angle);
+		new OvenFire(this.scene, this.image.x, this.image.y, Phaser.Math.RadToDeg(this.aimRotation));
 	}
 }
 
@@ -70,7 +72,7 @@ export class Bullet extends DamageWeapon {
 
 		this.image = scene.matter.add.image(x, y, 'bullet');
 		this.image.setDepth(Depth.Weapon);
-		this.image.setRectangle(20, 5);
+		this.image.setRectangle(40, 5);
 		this.image.setCollisionCategory(scene.categoryBullet);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
@@ -168,8 +170,8 @@ export class LawnMower extends DamageWeapon {
 		//this.image.setDensity(0.0001);
 		this.body = <MatterJS.BodyType>this.image.body;
 
-		this.body.frictionAir = 0.03;
-		this.body.friction = 0.03;
+		this.body.frictionAir = 0.05;
+		this.body.friction = 0.05;
 		this.body.restitution = 1;
 
 
@@ -191,14 +193,16 @@ export class LawnMower extends DamageWeapon {
 
 
 export class Pool extends DamageWeapon {
+
 	controller: PoolControl | null = null;
 
 	width = 100;
 	height = 300;
 
-	maxEnemiesInside = 3;
+	maxEnemiesInside = 10;
 	enemiesInside = 0;
 	lastTimeCleaned: number = 0;
+	fullLabel: Phaser.GameObjects.Text;
 
 	constructor(private scene: GameScene, x: number, y: number) {
 		super();
@@ -227,6 +231,17 @@ export class Pool extends DamageWeapon {
 			this.hit((<any>pair.bodyB).enemy);
 		}
 
+		this.fullLabel = this.scene.add.text(x, y, 'Pool is full', { color: 'black', fontFamily: 'Hellovetica' }).setOrigin(0.5, 0.5).setDepth(Depth.UI);
+		this.scene.tweens.add({
+			loop: -1,
+			targets: this.fullLabel,
+			scale: 1.4,
+			ease: 'sine.inOut',
+			yoyo: true,
+		});
+		this.fullLabel.setVisible(false);
+
+
 		//Probably need a fullness bar
 	}
 	hit(enemy: Enemy | undefined) {
@@ -235,6 +250,16 @@ export class Pool extends DamageWeapon {
 		if (this.enemiesInside < this.maxEnemiesInside) {
 			this.enemiesInside++;
 			enemy.receiveHitFromWeapon(this);
+
+			if (this.enemiesInside == this.maxEnemiesInside) {
+				this.fullLabel.setVisible(true);
+			}
 		}
+	}
+
+	decreaseEnemiesInside() {
+		this.enemiesInside--;
+		this.enemiesInside = Math.max(0, this.enemiesInside);
+		this.fullLabel.setVisible(false);
 	}
 }
