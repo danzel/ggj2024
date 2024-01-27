@@ -166,6 +166,8 @@ export class LawnMower extends DamageWeapon {
 
 	controller: LawnMowerControl | null = null;
 
+	densityDelay = 0;
+
 	constructor(private scene: GameScene, x: number, y: number) {
 		super();
 
@@ -185,16 +187,32 @@ export class LawnMower extends DamageWeapon {
 		this.body.onCollideCallback = (pair: MatterJS.IPair) => {
 			//hit enemies
 			if (this.controller!.playerUsingThis) {
-				this.hit((<any>pair.bodyA).enemy);
-				this.hit((<any>pair.bodyB).enemy);
+
+				let hit = this.hit((<any>pair.bodyA).enemy);
+				hit ||= this.hit((<any>pair.bodyB).enemy);
+
+				//Make it heavy for a bit to slow you down
+				if (hit) {
+					console.log(this.body.density);
+					this.image.setDensity(100000);
+					this.densityDelay += 1;
+
+					this.scene.time.delayedCall(300, () => {
+						this.densityDelay--;
+						if (this.densityDelay == 0) {
+							this.image.setDensity(0.001); //default
+						}
+					})
+				}
 			}
 		};
 	}
 
-	private hit(enemy: Enemy | undefined) {
-		if (!enemy) return;
+	private hit(enemy: Enemy | undefined): boolean {
+		if (!enemy) return false;
 
 		enemy.receiveHitFromWeapon(this);
+		return true;
 	}
 }
 

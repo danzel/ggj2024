@@ -3,6 +3,7 @@ import { Depth } from "./game/depth";
 import { Enemy } from "./game/enemy";
 import { House } from "./game/house";
 import { Player } from "./game/player";
+import { WaveModifier, WaveSource } from "./game/wave";
 import { LawnMower, MachineGunTurret, Oven, Pool, Weapon } from "./game/weapons";
 
 
@@ -26,6 +27,7 @@ export default class GameScene extends Phaser.Scene {
 	categoryPool: number = null!;
 
 	house: House = null!;
+	nextWaveInText: Phaser.GameObjects.Text = null!;
 
 	constructor() {
 		super('hello');
@@ -74,9 +76,9 @@ export default class GameScene extends Phaser.Scene {
 		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 90, 80, 40));
 		this.controls.push(new TV(this, 1920 / 2 + 80, 1080 / 2 + 80, 50, 50));
 
-		let lawnMower = new LawnMower(this, 400, 700);
+		let lawnMower = new LawnMower(this, 900, 780);
 		this.weapons.push(lawnMower);
-		this.controls.push(new LawnMowerControl(this, 1920 / 2 - 200, 1080 / 2 + 200, 100, 100, lawnMower));
+		this.controls.push(new LawnMowerControl(this, 900, 700, 40, 40, lawnMower));
 
 		let turret = new MachineGunTurret(this, 1090, 530, -90, 90);
 		this.weapons.push(turret);
@@ -95,6 +97,12 @@ export default class GameScene extends Phaser.Scene {
 		let pool = new Pool(this, 430, 300);
 		this.weapons.push(pool);
 		this.controls.push(new PoolControl(this, 430, 300, pool.width + 100, pool.height + 100, pool));
+
+
+		this.nextWaveInText = this.add.text(1920 / 2, 100, 'Next wave in 5 seconds', { color: 'white', fontSize: '30px', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setOrigin(0.5, 0.5)
+			.setDepth(Depth.UI);
 	}
 
 	isGameOver = false;
@@ -110,7 +118,7 @@ export default class GameScene extends Phaser.Scene {
 
 		this.manageEnemies(time, delta);
 
-		if (this.players.every(p => p.isDead) && !this.isGameOver) {
+		if ((this.players.every(p => p.isDead) || this.house.health == 0) && !this.isGameOver) {
 			this.isGameOver = true;
 
 			this.add.text(1920 / 2, 1080 / 2, 'Game Over', { color: 'white', fontSize: '100px', fontFamily: 'Hellovetica' })
@@ -132,49 +140,125 @@ export default class GameScene extends Phaser.Scene {
 				document.location.reload();
 			});
 		}
+
+		let next = ((this.nextWaveTime - time + 500) / 1000).toFixed();
+		let label = 'Next wave in ' + next + " seconds";
+		if (next == "1")
+			label = "Next wave in 1 second";
+		this.nextWaveInText.setText(label);
 	}
 
-	waveTimes = [
-		4000,
-		20 * 1000,
-	]
-	waveSizes = [
-		10,
-		50
-	]
+	nextWaveNumber = 0;
+	nextWaveSource = WaveSource.Surround;
+	nextWaveModifier = WaveModifier.None;
+	nextWaveTime = 4000;
 
 	manageEnemies(time: number, delta: number) {
 		this.enemies.forEach(enemy => enemy.update(time, delta));
 
+		if (time > this.nextWaveTime || (this.nextWaveModifier == WaveModifier.Early && time > this.nextWaveTime - 6000)) {
+			//Spawn this wave
+			this.spawnWave();
 
-		if (this.waveTimes.length && time > this.waveTimes[0]) {
-
-			//TODO: need different spawn patterns
-			for (let i = 0; i < this.waveSizes[0]; i++) {
-				//Find a random position off screen
-				let x = Math.random() * 1920;
-				let y = Math.random() * 1080;
-
-				//Randomly make them sides or top/bottom
-				if (Math.random() < 0.5) {
-					if (Math.random() < 0.5) {
-						x = - 20;
-					} else {
-						x = 1920 + 20;
-					}
-				} else {
-					if (Math.random() < 0.5) {
-						y = - 20;
-					} else {
-						y = 1080 + 20;
-					}
-
-				}
-				this.enemies.push(new Enemy(this, x, y));
+			//Maintain the right thingy
+			if (this.nextWaveModifier == WaveModifier.Early) {
+				this.nextWaveTime -= 6_000;
 			}
 
-			this.waveTimes.shift();
-			this.waveSizes.shift();
+			this.nextWaveNumber++;
+			this.nextWaveSource = Phaser.Math.RND.pick([WaveSource.Surround, WaveSource.Left, WaveSource.Right, WaveSource.LeftRight, WaveSource.Above, WaveSource.Below, WaveSource.AboveBelow]);
+			this.nextWaveModifier = Phaser.Math.RND.pick([WaveModifier.None, WaveModifier.Fast, WaveModifier.Huge, WaveModifier.Early]);
+
+			this.nextWaveTime += 30_000;
+		}
+	}
+
+	leftSpawnZone = [-100, -100, 80, 1080 + 200];
+	rightSpawnZone = [1920 + 20, -100, 80, 1080 + 200];
+	aboveSpawnZone = [-100, -100, 1920 + 200, 80];
+	belowSpawnZone = [-100, 1080 + 20, 1920 + 200, 80];
+
+	private spawnWave() {
+		let size = 10 + this.nextWaveNumber * 25;
+		let speed = 0.0003 + this.nextWaveNumber * 0.00005;
+
+		let label = "Zombies approach from ";
+
+		if (this.nextWaveModifier == WaveModifier.Huge) {
+			size *= 2;
+			label = "A huge wave of " + label;
+		}
+		if (this.nextWaveModifier == WaveModifier.Fast) {
+			speed *= 2;
+			label = "A fast wave of " + label;
+		}
+
+
+		let spawnZones = new Array<number[]>();
+		switch (this.nextWaveSource) {
+			case WaveSource.Surround:
+				spawnZones.push(this.leftSpawnZone);
+				spawnZones.push(this.rightSpawnZone);
+				spawnZones.push(this.aboveSpawnZone);
+				spawnZones.push(this.belowSpawnZone);
+				label += "all sides";
+				break;
+			case WaveSource.Left:
+				spawnZones.push(this.leftSpawnZone);
+				label += "the west";
+				break;
+			case WaveSource.Right:
+				spawnZones.push(this.rightSpawnZone);
+				label += "the east";
+				break;
+			case WaveSource.LeftRight:
+				spawnZones.push(this.leftSpawnZone);
+				spawnZones.push(this.rightSpawnZone);
+				label += "the east and west";
+				break;
+			case WaveSource.Above:
+				spawnZones.push(this.aboveSpawnZone);
+				label += "the north";
+				break;
+			case WaveSource.Below:
+				spawnZones.push(this.belowSpawnZone);
+				label += "the south";
+				break;
+			case WaveSource.AboveBelow:
+				spawnZones.push(this.aboveSpawnZone);
+				spawnZones.push(this.belowSpawnZone);
+				label += "the north and south";
+				break;
+			default:
+				throw new Error("Unknown WaveSource: " + this.nextWaveSource);
+		}
+
+
+		let text = this.add.text(1920 / 2, 1080 / 2 - 300, label, { color: 'white', fontSize: '50px', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setOrigin(0.5, 0.5)
+			.setDepth(Depth.UI);
+		this.time.delayedCall(3000, () => {
+			text.destroy();
+		});
+
+		if (this.nextWaveModifier == WaveModifier.Early) {
+			let text = this.add.text(1920 / 2, 1080 / 2 - 300 + 60, "\n They are early!", { color: 'white', fontSize: '50px', fontFamily: 'Hellovetica' })
+				.setStroke('#000', 4)
+				.setOrigin(0.5, 0.5)
+				.setDepth(Depth.UI);
+			this.time.delayedCall(3000, () => {
+				text.destroy();
+			});
+		}
+
+		for (let i = 0; i < size; i++) {
+			//pick a random spawn zone
+			let spawnZone = Phaser.Math.RND.pick(spawnZones);
+			//random locatin in that zone	
+			let x = Phaser.Math.RND.between(spawnZone[0], spawnZone[0] + spawnZone[2]);
+			let y = Phaser.Math.RND.between(spawnZone[1], spawnZone[1] + spawnZone[3]);
+			this.enemies.push(new Enemy(this, x, y, speed));
 		}
 	}
 }

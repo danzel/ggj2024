@@ -137,7 +137,7 @@ export class MachineGunTurretControl extends WeaponControl {
 	receiveInput(p: Phaser.Input.Gamepad.Gamepad, time: number, delta: number): void {
 		let x = p.axes[0].getValue();
 		if (x > 0.1 || x < -0.1) {
-			let rotation = delta / 1000 * 40 * x;
+			let rotation = delta / 1000 * 50 * x;
 
 			if (this.turret.minAngleDegree < this.turret.maxAngleDegree) {
 				this.turret.image.angle = Phaser.Math.Clamp(this.turret.image.angle + rotation, this.turret.minAngleDegree, this.turret.maxAngleDegree);

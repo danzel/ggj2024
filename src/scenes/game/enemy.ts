@@ -8,7 +8,9 @@ export class Enemy {
 
 	animOffset = Math.random() * 1000;
 
-	constructor(private scene: GameScene, x: number, y: number) {
+	isDestroyed = false;
+
+	constructor(private scene: GameScene, x: number, y: number, private speed: number) {
 		this.image = scene.matter.add.sprite(x, y, 'enemy', 0);
 		this.image.setDepth(Depth.Enemy);
 		this.image.setRectangle(18, 40);
@@ -29,7 +31,7 @@ export class Enemy {
 		//if there is a player near, walk towards it
 
 		//otherwise walk towards the center of the screen
-		let force = new Phaser.Math.Vector2(1920 / 2, 1080 / 2).subtract({ x: this.image.x, y: this.image.y }).normalize().scale(0.0003);
+		let force = new Phaser.Math.Vector2(1920 / 2, 1080 / 2).subtract({ x: this.image.x, y: this.image.y }).normalize().scale(this.speed);
 		this.image.applyForce(force);
 
 		this.image.setFrame(Math.floor((this.animOffset + time) / 130) % 8);
@@ -43,6 +45,9 @@ export class Enemy {
 
 	receiveHitFromWeapon(weapon: DamageWeapon): void {
 
+		if (this.isDestroyed) {
+			return;
+		}
 		let color = 0x440000;
 		if (!(weapon instanceof OvenFire)) {
 			color = Phaser.Math.Between(0x660000, 0xbb0000) & 0xff0000;
@@ -65,5 +70,6 @@ export class Enemy {
 		});
 		this.image.destroy();
 		this.scene.enemies.splice(this.scene.enemies.indexOf(this), 1);
+		this.isDestroyed = true;
 	}
 }

@@ -92,7 +92,7 @@ export class Player {
 		if (!enemy) return;
 
 		//fps hack
-		this.energy.value -= 0.1 / 60;
+		this.energy.value -= 0.14 / 60;
 		this.energy.value = Math.max(0, this.energy.value);
 	}
 
@@ -130,7 +130,7 @@ export class Player {
 		//Damage energy if other stats are low
 		for (let i = 1; i < this.stats.length; i++) {
 			if (this.stats[i].value == 0) {
-				this.energy.value -= delta / 10000;
+				this.energy.value -= delta / 20000;
 				this.energy.value = Math.max(0, this.energy.value);
 			}
 		}
@@ -144,6 +144,8 @@ export class Player {
 			this.image.setTexture('grave');
 			this.image.setOrigin(.5, .8);
 			this.image.setScale(.7);
+
+			this.warningLabel.destroy();
 
 			return;
 		}
