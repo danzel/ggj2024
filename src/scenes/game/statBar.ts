@@ -6,7 +6,8 @@ import { Stat } from "./stat";
 export class StatBar {
 	gfx: Phaser.GameObjects.Graphics;
 	bgGfx: Phaser.GameObjects.Graphics;
-	constructor(scene: GameScene, name: string, private stat: Stat, x: number, y: number) {
+	text: Phaser.GameObjects.Text;
+	constructor(scene: GameScene, name: string, public stat: Stat, x: number, y: number) {
 
 
 		this.bgGfx = scene.add.graphics();
@@ -21,7 +22,7 @@ export class StatBar {
 		this.gfx.fillRect(0, 0, 200 - 2, 20 - 2);
 		this.gfx.setPosition(x + 1, y + 1);
 
-		scene.add.text(x, y, name, { fontSize: '14px', color: '#fff', fontFamily: 'Hellovetica' })
+		this.text = scene.add.text(x, y, name, { fontSize: '14px', color: '#fff', fontFamily: 'Hellovetica' })
 			.setStroke('#000', 4)
 			.setDepth(Depth.UI);
 	}

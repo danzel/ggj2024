@@ -1,5 +1,5 @@
 import GameScene from "../gameScene";
-import { Control, OvenControl, WeaponControl } from "./control";
+import { Bed, Control, Kitchen, OvenControl, TV, Toilet, WeaponControl } from "./control";
 import { Depth } from "./depth";
 import { Enemy } from "./enemy";
 import { Stat } from "./stat";
@@ -21,6 +21,7 @@ export class Player {
 	warningLabel: Phaser.GameObjects.Text;
 
 	isDead = false;
+	activeStatBar: StatBar;
 
 	constructor(private scene: GameScene, private playerNumber: number) {
 
@@ -83,6 +84,10 @@ export class Player {
 			new StatBar(scene, 'Toilet', this.toilet, statPosX, statPosY + 120),
 		];
 
+		this.activeStatBar = new StatBar(scene, '', this.energy, x, y);
+		this.activeStatBar.bgGfx.scale = 0.3;
+		this.activeStatBar.gfx.scale = 0.3;
+
 		(<MatterJS.BodyType>this.image.body).onCollideActiveCallback = (pair: MatterJS.IPair) => {
 			this.hitByEnemy((<any>pair.bodyA).enemy);
 			this.hitByEnemy((<any>pair.bodyB).enemy);
@@ -110,24 +115,58 @@ export class Player {
 		else
 			this.image.setFlipX(false);
 
+		this.activeStatBar.bgGfx.x = this.image.x - 30;
+		this.activeStatBar.bgGfx.y = this.image.y - 10;
+		this.activeStatBar.gfx.x = this.image.x - 30;
+		this.activeStatBar.gfx.y = this.image.y - 10;
+
+		this.activeStatBar.stat = null!;
+		if (this.usingControl) {
+
+			if (this.usingControl instanceof Toilet) {
+				this.activeStatBar.stat = this.toilet;
+			}
+			else if (this.usingControl instanceof Bed) {
+				this.activeStatBar.stat = this.energy;
+			}
+			else if (this.usingControl instanceof Kitchen) {
+				this.activeStatBar.stat = this.antiHunger;
+			} else if (this.usingControl instanceof TV) {
+				this.activeStatBar.stat = this.fun;
+			}
+
+			if (this.activeStatBar.stat) {
+				this.activeStatBar.bgGfx.visible = true;
+				this.activeStatBar.gfx.visible = true;
+				this.activeStatBar.update(time, delta);
+				this.activeStatBar.gfx.scaleX *= 0.3;
+				this.activeStatBar.gfx.scaleY = 0.3;
+			}
+		}
+		if (!this.activeStatBar.stat) {
+			this.activeStatBar.bgGfx.visible = false;
+			this.activeStatBar.gfx.visible = false;
+		}
+
 		this.stats.forEach(stat => stat.update(time, delta));
 		this.statBars.forEach(statBar => statBar.update(time, delta));
+
 
 		//Update warning based on low stats
 		let warning = new Array<string>();
 		if (this.energy.value < 0.1) warning.push('Tired');
-		if (this.antiHunger.value == 0) warning.push('Hungry');
-		if (this.fun.value == 0) warning.push('Bored');
-		if (this.toilet.value == 0) warning.push('Poopy');
+		if (this.antiHunger.value < 0.1) warning.push('Hungry');
+		if (this.fun.value < 0.1) warning.push('Bored');
+		if (this.toilet.value < 0.1) warning.push('Poopy');
 
 		if (warning.length) {
 			this.warningLabel.setColor('red');
 		} else {
+			this.warningLabel.setColor('white');
 			if (this.energy.value < 0.25) warning.push('Tired');
 			if (this.antiHunger.value < 0.25) warning.push('Hungry');
 			if (this.fun.value < 0.25) warning.push('Bored');
 			if (this.toilet.value < 0.25) warning.push('Poopy');
-			this.warningLabel.setColor('white');
 		}
 		this.warningLabel.text = warning.join(' ');
 		this.warningLabel.x = this.image.x;
