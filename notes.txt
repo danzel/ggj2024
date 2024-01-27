@@ -39,3 +39,27 @@ Enemies drop money, need the money to call people to fix stuff
 
 
 
+	
+
+
+
+
+
+Waves = next wave timer, good waves
+survival time
+
+rebalance starting stats
+players dieing
+game over + screen
+
+zombies die good
+
+
+
+Art
+Players
+Mower
+Control stations (places to control things from)
+Flames
+
+particles = gun fire, mower

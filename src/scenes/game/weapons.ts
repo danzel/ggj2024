@@ -16,10 +16,12 @@ export class MachineGunTurret extends Weapon {
 	constructor(private scene: GameScene, x: number, y: number, public minAngleDegree: number, public maxAngleDegree: number) {
 		super();
 
-		this.image = scene.matter.add.image(x, y, 'gunTurret');
+		this.image = scene.matter.add.image(x, y, 'turret_barrel');
 		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(30, { isStatic: true });
 		this.image.setCollisionCategory(scene.categoryTurret);
+
+		this.image.setOrigin(0, 0.5);
 		this.image.angle = minAngleDegree;
 
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryLawnMower, scene.categoryPlayer, scene.categoryWall, scene.categoryTurret]);
@@ -70,14 +72,17 @@ export class Bullet extends DamageWeapon {
 	constructor(private scene: GameScene, x: number, y: number, angle: number) {
 		super();
 
-		this.image = scene.matter.add.image(x, y, 'bullet');
+		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45));
+
+		let directionOffset = direction.clone().scale(40);
+		this.image = scene.matter.add.image(x + directionOffset.x, y + directionOffset.y, 'bullet');
 		this.image.setDepth(Depth.Weapon);
 		this.image.setRectangle(40, 5);
 		this.image.setCollisionCategory(scene.categoryBullet);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryLawnMower]);
 		this.image.angle = angle;
-		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45)).scale(60);
 		//randomise a bit
+		direction.scale(60);
 		direction.rotate(Phaser.Math.DegToRad(Phaser.Math.Between(-2, 2)));
 		this.image.setVelocity(direction.x, direction.y);
 
