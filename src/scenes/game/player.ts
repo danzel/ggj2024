@@ -60,6 +60,7 @@ export class Player {
 		this.image = scene.matter.add.image(x, y, 'player');
 		this.image.setDepth(Depth.Player);
 		this.image.setCircle(10);
+		this.image.setOrigin(.5, .8);
 		this.image.setCollisionCategory(scene.categoryPlayer);
 		this.image.setCollidesWith([scene.categoryPlayer, scene.categoryWall, scene.categoryEnemy, scene.categoryLawnMower, scene.categoryTurret, scene.categoryBullet, scene.categoryControlSensor, scene.categoryOvenFire, scene.categoryPool])
 		this.body = <MatterJS.BodyType>this.image.body;
@@ -72,7 +73,7 @@ export class Player {
 
 		this.warningLabel = scene.add.text(x, y, 'Hungry Bored Tired Poopy', { color: 'white', fontSize: '20px', fontFamily: 'Hellovetica' })
 			.setStroke('#000', 4)
-			.setOrigin(0.5, 1.5)
+			.setOrigin(0.5, 1.8)
 			.setDepth(Depth.UI);
 
 		this.statBars = [
@@ -103,6 +104,11 @@ export class Player {
 		if (this.isDead) {
 			return;
 		}
+
+		if (this.body.velocity.x < 0)
+			this.image.setFlipX(true);
+		else
+			this.image.setFlipX(false);
 
 		this.stats.forEach(stat => stat.update(time, delta));
 		this.statBars.forEach(statBar => statBar.update(time, delta));

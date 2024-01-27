@@ -19,7 +19,7 @@ export class MachineGunTurret extends Weapon {
 
 		this.image = scene.matter.add.image(x, y, 'turret_barrel');
 		this.image.setDepth(Depth.Weapon);
-		this.image.setCircle(30, { isStatic: true });
+		this.image.setCircle(20, { isStatic: true });
 		this.image.setCollisionCategory(scene.categoryTurret);
 
 		this.image.setOrigin(0, 0.5);
@@ -98,7 +98,7 @@ export class Bullet extends DamageWeapon {
 
 		let direction = Phaser.Math.Vector2.ONE.clone().rotate(Phaser.Math.DegToRad(angle - 45));
 
-		let directionOffset = direction.clone().scale(40);
+		let directionOffset = direction.clone().scale(20);
 		this.image = scene.matter.add.image(x + directionOffset.x, y + directionOffset.y, 'bullet');
 		this.image.setDepth(Depth.Weapon);
 		this.image.setRectangle(40, 5);

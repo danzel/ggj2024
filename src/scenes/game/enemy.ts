@@ -79,9 +79,21 @@ export class Enemy {
 		});
 		if (this.health == 0) {
 
-			this.image.destroy();
+			this.image.setCollidesWith([]);
+
+			//this.image.destroy();
 			this.scene.enemies.splice(this.scene.enemies.indexOf(this), 1);
 			this.isDestroyed = true;
+
+			this.scene.tweens.add({
+				targets: this.image,
+				alpha: 0,
+				duration: 900,
+				angle: 90
+			})
+			this.scene.time.delayedCall(1000, () => {
+				this.image.destroy();
+			});
 		}
 	}
 }
