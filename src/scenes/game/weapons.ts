@@ -200,9 +200,10 @@ export class LawnMower extends DamageWeapon {
 	constructor(private scene: GameScene, x: number, y: number) {
 		super();
 
-		this.image = scene.matter.add.image(x, y, 'lawnmower');
+		this.image = scene.matter.add.sprite(x, y, 'mower');
 		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(20);
+		this.image.setFixedRotation();
 		this.image.setCollisionCategory(scene.categoryLawnMower);
 		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryTurret, scene.categoryBullet, scene.categoryPool])
 		//this.image.setDensity(0.0001);
@@ -220,6 +221,7 @@ export class LawnMower extends DamageWeapon {
 				scale: .3,
 				speed: { min: 30, max: 80 },
 				rotate: { min: 0, max: 360 },
+
 				//advance: 2000,
 				//blendMode: 'ADD',
 				alpha: { start: 1, end: 0 },

@@ -127,6 +127,24 @@ export class LawnMowerControl extends WeaponControl {
 		//todo if a player is controlling, put out some smoke particles
 		if (this.playerUsingThis) {
 			this.lawnMower.particles.emitParticleAt(this.lawnMower.image.x - 10 + Math.random() * 20, this.lawnMower.image.y - 10 + Math.random() * 20, 4);
+
+
+			//Set frame by angle
+			let r = (Phaser.Math.RadToDeg(new Phaser.Math.Vector2(this.lawnMower.image.getVelocity()).angle()) + 360) % 360;
+			if (r > 360 - 45 || r < 45)
+				this.lawnMower.image.setFrame(1);
+			else if (r > 45 && r < 135)
+				this.lawnMower.image.setFrame(2);
+			else if (r > 135 && r < 135 + 90)
+				this.lawnMower.image.setFrame(0);
+			else if (r > 360 - 45 - 90 && r < 360 - 45)
+				this.lawnMower.image.setFrame(3);
+
+			this.lawnMower.image.setOrigin(.5 + Math.random() * .1 - 0.05, .5 + Math.random() * .1 - .05);
+			//this.lawnMower.image.setOrigin(Math.random() * 4 - 2, Math.random() * 4 - 2);
+		} else {
+			this.lawnMower.image.setOrigin(.5 + Math.random() * .1 / 3 - 0.05 / 3, .5 + Math.random() * .1 / 3 - .05 / 3);
+
 		}
 	}
 }
@@ -197,8 +215,6 @@ export class OvenControl extends WeaponControl {
 					this.oven.image.setFrame(0);
 				else if (r > 360 - 45 - 90 && r < 360 - 45)
 					this.oven.image.setFrame(3);
-				console.log(r, this.oven.image.frame.name)
-				//this.oven.image.rotation = Phaser.Math.Angle.RotateTo(this.oven.image.rotation, controllerAngle.angle(), 2 * delta / 1000);
 			}
 		}
 	}
