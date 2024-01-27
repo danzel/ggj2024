@@ -21,7 +21,9 @@ export class StatBar {
 		this.gfx.fillRect(0, 0, 200 - 2, 20 - 2);
 		this.gfx.setPosition(x + 1, y + 1);
 
-		scene.add.text(x, y, name, { fontSize: '14px', color: '#000', fontFamily: 'Hellovetica' }).setDepth(Depth.UI);
+		scene.add.text(x, y, name, { fontSize: '14px', color: '#fff', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setDepth(Depth.UI);
 	}
 
 	update(time: number, delta: number): void {
@@ -49,7 +51,10 @@ export class HouseHealthStatBar {
 		this.gfx.fillRect(0, 0, w - 4, h - 4);
 		this.gfx.setPosition((1920 - w + 4) / 2, 40 + 2);
 
-		scene.add.text(1920 / 2 - 40, 44, "House", { fontSize: '20px', color: '#000', fontFamily: 'Hellovetica' }).setDepth(Depth.UI);
+		scene.add.text(1920 / 2, 44, "Flat Health", { fontSize: '20px', color: '#fff', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setOrigin(0.5, 0)
+			.setDepth(Depth.UI);
 	}
 
 	update(time: number, delta: number): void {

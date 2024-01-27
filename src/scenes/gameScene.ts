@@ -38,6 +38,7 @@ export default class GameScene extends Phaser.Scene {
 
 		this.load.image('house', 'assets/images/house.png');
 		this.load.spritesheet('oven', 'assets/images/oven.png', { frameWidth: 40, frameHeight: 40 });
+		this.load.spritesheet('enemy', 'assets/images/enemy2.png', { frameWidth: 44, frameHeight: 65, endFrame: 8 });
 
 		// load static assets from url
 		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
@@ -64,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
 		this.house = new House(this);
 
 		this.controls.push(new Toilet(this, 1920 / 2 + 84, 1080 / 2 - 80, 50, 40));
-		this.controls.push(new Bed(this, 1920 / 2 - 80, 1080 / 2 - 60, 50, 50));
+		this.controls.push(new Bed(this, 1920 / 2 - 60, 1080 / 2 - 60, 50, 50));
 		this.controls.push(new Kitchen(this, 1920 / 2 - 50, 1080 / 2 + 90, 80, 40));
 		this.controls.push(new TV(this, 1920 / 2 + 80, 1080 / 2 + 80, 50, 50));
 
@@ -86,9 +87,9 @@ export default class GameScene extends Phaser.Scene {
 		this.controls.push(new OvenControl(this, 1000, 500, 50, oven));
 
 
-		let pool = new Pool(this, 200, 500);
+		let pool = new Pool(this, 430, 300);
 		this.weapons.push(pool);
-		this.controls.push(new PoolControl(this, 200, 500, pool.width + 100, pool.height + 100, pool));
+		this.controls.push(new PoolControl(this, 430, 300, pool.width + 100, pool.height + 100, pool));
 	}
 
 	update(time: number, delta: number): void {

@@ -204,12 +204,13 @@ export class OvenControl extends WeaponControl {
 		this.sensor.position.x = this.oven.image.x;
 		this.sensor.position.y = this.oven.image.y;
 
+		//make player follow
 		if (this.playerUsingThis) {
 			let pp = new Phaser.Math.Vector2(this.playerUsingThis.image.x, this.playerUsingThis.image.y);
 			let op = new Phaser.Math.Vector2(this.oven.image.x, this.oven.image.y);
 
 			if (pp.distance(op) > 40) {
-				this.playerUsingThis.image.applyForce(op.subtract(pp).normalize().scale(0.001));
+				this.playerUsingThis.image.applyForce(op.subtract(pp).normalize().scale(0.0015));
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 import GameScene from "../gameScene";
-import { Control, WeaponControl } from "./control";
+import { Control, OvenControl, WeaponControl } from "./control";
 import { Depth } from "./depth";
 import { Stat } from "./stat";
 import { StatBar } from "./statBar";
@@ -12,7 +12,7 @@ export class Player {
 	fun = new Stat(0.01);
 	energy = new Stat(0.01);
 	toilet = new Stat(0.01);
-	stats = [this.antiHunger, this.fun, this.energy, this.toilet];
+	stats = [this.energy, this.antiHunger, this.fun, this.toilet];
 	statBars: StatBar[];
 
 	onControl: Control | null = null;
@@ -62,12 +62,15 @@ export class Player {
 		this.body.restitution = 1;
 
 
-		this.warningLabel = scene.add.text(x, y, 'Hungry Bored Tired Poopy', { color: 'red', fontSize: '20px', fontFamily: 'Hellovetica' }).setOrigin(0.5, 1.5).setDepth(Depth.UI);
+		this.warningLabel = scene.add.text(x, y, 'Hungry Bored Tired Poopy', { color: 'white', fontSize: '20px', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setOrigin(0.5, 1.5)
+			.setDepth(Depth.UI);
 
 		this.statBars = [
-			new StatBar(scene, 'Hunger', this.antiHunger, statPosX, statPosY),
-			new StatBar(scene, 'Fun', this.fun, statPosX, statPosY + 40),
-			new StatBar(scene, 'Energy', this.energy, statPosX, statPosY + 80),
+			new StatBar(scene, 'Energy', this.energy, statPosX, statPosY),
+			new StatBar(scene, 'Hunger', this.antiHunger, statPosX, statPosY + 40),
+			new StatBar(scene, 'Fun', this.fun, statPosX, statPosY + 80),
 			new StatBar(scene, 'Toilet', this.toilet, statPosX, statPosY + 120),
 		];
 	}
@@ -87,6 +90,13 @@ export class Player {
 		this.warningLabel.text = warning.join(' ');
 		this.warningLabel.x = this.image.x;
 		this.warningLabel.y = this.image.y;
+
+		//Damage energy if other stats are low
+		for (let i = 1; i < this.stats.length; i++) {
+			if (this.stats[i].value == 0) {
+				this.energy.value -= delta / 10000;
+			}
+		}
 
 		const p = this.scene.input.gamepad?.getPad(this.playerNumber);
 		if (!p) return;
@@ -113,7 +123,10 @@ export class Player {
 				if (!this.onControl.playerUsingThis) {
 					this.onControl.playerUsingThis = this;
 					this.usingControl = this.onControl;
-					this.body.isStatic = true;
+
+					if (!(this.onControl instanceof OvenControl)) {
+						this.body.isStatic = true;
+					}
 				}
 			}
 		}

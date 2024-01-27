@@ -166,7 +166,7 @@ export class LawnMower extends DamageWeapon {
 		this.image.setDepth(Depth.Weapon);
 		this.image.setCircle(20);
 		this.image.setCollisionCategory(scene.categoryLawnMower);
-		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryTurret, scene.categoryBullet])
+		this.image.setCollidesWith([scene.categoryEnemy, scene.categoryWall, scene.categoryPlayer, scene.categoryTurret, scene.categoryBullet, scene.categoryPool])
 		//this.image.setDensity(0.0001);
 		this.body = <MatterJS.BodyType>this.image.body;
 
@@ -196,7 +196,7 @@ export class Pool extends DamageWeapon {
 
 	controller: PoolControl | null = null;
 
-	width = 100;
+	width = 180;
 	height = 300;
 
 	maxEnemiesInside = 10;
@@ -212,7 +212,7 @@ export class Pool extends DamageWeapon {
 			isStatic: true,
 			collisionFilter: {
 				category: scene.categoryPool,
-				mask: scene.categoryPlayer
+				mask: scene.categoryPlayer | scene.categoryLawnMower
 			}
 		});
 
@@ -231,7 +231,9 @@ export class Pool extends DamageWeapon {
 			this.hit((<any>pair.bodyB).enemy);
 		}
 
-		this.fullLabel = this.scene.add.text(x, y, 'Pool is full', { color: 'black', fontFamily: 'Hellovetica' }).setOrigin(0.5, 0.5).setDepth(Depth.UI);
+		this.fullLabel = this.scene.add.text(x, y, 'Pool is full', { color: 'white', fontFamily: 'Hellovetica' })
+			.setStroke('#000', 4)
+			.setOrigin(0.5, 0.5).setDepth(Depth.UI);
 		this.scene.tweens.add({
 			loop: -1,
 			targets: this.fullLabel,
