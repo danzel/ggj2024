@@ -96,15 +96,21 @@ export class House {
 			.setCrop(x, y, w, h);
 	}
 
+	hitsThisSecond = 0;
+
 	private receiveHit(enemy: Enemy | undefined): void {
 		if (!enemy) return;
 
 		//hack in per second damage
 		this.health -= 0.01 / 60;
 		this.health = Math.max(0, this.health);
+
+		this.hitsThisSecond++;
+		this.scene.cameras.main.shake(100, 0.001 * this.hitsThisSecond);
 	}
 
 	update(time: number, delta: number): void {
 		this.statBar.update(time, delta);
+		this.hitsThisSecond = 0;
 	}
 }
