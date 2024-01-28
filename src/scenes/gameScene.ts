@@ -30,12 +30,16 @@ export default class GameScene extends Phaser.Scene {
 	nextWaveInText: Phaser.GameObjects.Text = null!;
 
 	constructor() {
-		super('hello');
+		super({ key: 'gamescene' });
 
 		this.players = [];
 	}
 
 	preload() {
+		this.load.image('intro1', 'assets/images/IntroScreen1.png');
+		this.load.image('intro2', 'assets/images/IntroScreen2.png');
+
+
 		// load static from our public dir
 		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
 
@@ -87,6 +91,11 @@ export default class GameScene extends Phaser.Scene {
 		//this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
 	}
 
+	preview: Phaser.GameObjects.Image = null!;
+	showingPreview1 = true;
+	showingPreview2 = false;
+	previewPressed = false;
+
 	create() {
 		this.categoryPlayer = this.matter.world.nextCategory();
 		this.categoryEnemy = this.matter.world.nextCategory();
@@ -98,7 +107,11 @@ export default class GameScene extends Phaser.Scene {
 		this.categoryOvenFire = this.matter.world.nextCategory();
 		this.categoryPool = this.matter.world.nextCategory();
 
+		this.preview = this.add.image(0, 0, 'intro1').setOrigin(0, 0);
+	}
 
+	createLater() {
+		this.nextWaveTime = 4000 + this.time.now;
 
 		for (let i = 0; i < 4; i++) {
 			this.players.push(new Player(this, i));
@@ -145,6 +158,34 @@ export default class GameScene extends Phaser.Scene {
 	aliveTime = 0;
 
 	update(time: number, delta: number): void {
+		let somethingPressed = this.input.gamepad!.total > 0 && this.input.gamepad?.getAll().some(p => p.A)
+		if (this.showingPreview1) {
+			if (somethingPressed) {
+				this.preview.destroy();
+				this.preview = this.add.image(0, 0, 'intro2').setOrigin(0, 0);
+				this.previewPressed = true;
+
+				this.showingPreview1 = false;
+				this.showingPreview2 = true;
+			}
+			return;
+		}
+		if (this.showingPreview2) {
+			if (!this.previewPressed && somethingPressed) {
+				this.preview.destroy();
+				this.createLater();
+				this.showingPreview2 = false;
+			} else {
+				if (!somethingPressed) {
+					this.previewPressed = false;
+				}
+			}
+
+			return;
+		}
+
+
+
 		this.aliveTime += delta;
 
 		this.players.forEach(player => player.update(time, delta));

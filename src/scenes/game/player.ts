@@ -41,7 +41,7 @@ export class Player {
 			case 1:
 				x = 1920 - 300;
 				y = 300;
-				statPosX = 1920 - 200;
+				statPosX = 1920 - 250;
 				statPosY = 50;
 				this.antiHunger.value = 0.25;
 				color = 0x4c74e4;
@@ -49,16 +49,18 @@ export class Player {
 			case 2:
 				x = 300;
 				y = 1080 - 300;
+				//x = 1920 / 2;
+				//y = 1080 / 2;
 				statPosX = 50;
-				statPosY = 1080 - 250;
+				statPosY = 1080 - 180;
 				this.fun.value = 0.25;
 				color = 0x5ab88a;
 				break;
 			case 3:
 				x = 1920 - 300;
 				y = 1080 - 300;
-				statPosX = 1920 - 200;
-				statPosY = 1080 - 250;
+				statPosX = 1920 - 250;
+				statPosY = 1080 - 180;
 				this.toilet.value = 0.25;
 				color = 0xe09e3f;
 				break;
