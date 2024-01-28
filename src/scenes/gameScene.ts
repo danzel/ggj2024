@@ -40,9 +40,6 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('intro2', 'assets/images/IntroScreen2.png');
 
 
-		// load static from our public dir
-		this.load.image('vite-phaser-logo', 'assets/images/vite-phaser.png');
-
 		this.load.image('house', 'assets/images/house.png');
 		this.load.image('housejustwalls', 'assets/images/housejustwalls.png');
 		this.load.image('pools_full', 'assets/images/pools_full.png');
@@ -84,11 +81,6 @@ export default class GameScene extends Phaser.Scene {
 		this.load.audio('gun2', 'assets/sound/gun/tap2.ogg');
 
 		this.load.audio('scream', 'assets/sound/scream.ogg');
-
-
-		// load static assets from url
-		//this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
-		//this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
 	}
 
 	preview: Phaser.GameObjects.Image = null!;
