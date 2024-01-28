@@ -123,11 +123,11 @@ export default class GameScene extends Phaser.Scene {
 
 		let turret = new MachineGunTurret(this, 1090, 540, -90, 90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 20, turret));
+		this.controls.push(new MachineGunTurretControl(this, 1060, 530, 30, 40, turret));
 
 		turret = new MachineGunTurret(this, 830, 570, 90, -90);
 		this.weapons.push(turret);
-		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 20, turret));
+		this.controls.push(new MachineGunTurretControl(this, 860, 560, 30, 40, turret));
 
 
 		let oven = new Oven(this, 1000, 800);
@@ -294,10 +294,12 @@ export default class GameScene extends Phaser.Scene {
 				break;
 			case WaveSource.Above:
 				spawnZones.push(this.aboveSpawnZone);
+				size /= 2;
 				label += "the north";
 				break;
 			case WaveSource.Below:
 				spawnZones.push(this.belowSpawnZone);
+				size /= 2;
 				label += "the south";
 				break;
 			case WaveSource.AboveBelow:
@@ -314,7 +316,7 @@ export default class GameScene extends Phaser.Scene {
 
 			speed *= 20;
 			health = 8;
-			size /= 5;
+			size /= 6;
 		}
 
 

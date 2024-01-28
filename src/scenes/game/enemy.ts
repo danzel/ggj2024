@@ -40,9 +40,9 @@ export class Enemy {
 		this.image.applyForce(force);
 
 		this.image.setFrame(Math.floor((this.animOffset + time) / 130) % 8);
-		if (this.body.velocity.x < -.1)
+		if (this.body.velocity.x < -.03)
 			this.image.setFlipX(true);
-		else if (this.body.velocity.x > .1)
+		else if (this.body.velocity.x > .03)
 			this.image.setFlipX(false);
 
 		this.image.setDepth(Depth.Enemy + this.image.y / 1080);
