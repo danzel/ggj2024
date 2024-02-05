@@ -314,7 +314,7 @@ export default class GameScene extends Phaser.Scene {
 		if (this.nextWaveModifier == WaveModifier.BigZombies) {
 			label += " and they are big!";
 
-			speed *= 20;
+			speed *= 13;
 			health = 8;
 			size /= 6;
 		}
